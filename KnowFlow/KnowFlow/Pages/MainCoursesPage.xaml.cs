@@ -1,5 +1,6 @@
 ﻿using KnowFlow.Models;
 using KnowFlow.Pages.Сlass;
+using KnowFlow.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,16 +55,16 @@ namespace KnowFlow.Pages
 
         private void CourseButton_Click(object sender, RoutedEventArgs e)
         {
-            //if (sender is Button button && button.DataContext is Course course)
-            //{
-            //    if (Window.GetWindow(this) is CuratorMainWindow mainWindow)
-            //    {
-            //        bool isUser = mainWindow.IsUser;
-            //        var coursePage = new CoursePage(course, _currentUser, isUser);
-            //        mainWindow.MainFrame.Navigate(coursePage);
-            //        mainWindow.AddClassButton.IsEnabled = false;
-            //    }
-            //}
+            if (sender is Button button && button.DataContext is Course course)
+            {
+                if (Window.GetWindow(this) is MainAppWindow mainWindow)
+                {
+                    bool isUser = mainWindow.IsUser;
+                    var coursePage = new CoursePage(course, _currentUser, isUser);
+                    mainWindow.MainFrame.Navigate(coursePage);
+                    mainWindow.AddClassButton.IsEnabled = false;
+                }
+            }
         }
     }
 }

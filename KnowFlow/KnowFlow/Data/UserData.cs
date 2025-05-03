@@ -119,5 +119,82 @@ namespace KnowFlow.Pages.Сlass
                 context.SaveChanges();
             }
         }
+
+        public List<User> GetCourseParticipants(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+            return context.UserCourses
+                .Where(uc => uc.CourseId == courseId)
+                .Join(context.Users,
+                      uc => uc.UserId,
+                      u => u.UserID,
+                      (uc, u) => u)
+                .ToList();
+        }
+
+        public List<CourseMaterial> GetCourseMaterials(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+
+            return context.CourseMaterials
+                .Where(m => m.CourseId == courseId)
+                .Include(m => m.Files)
+                .ToList();
+        }
+
+        public void DeleteCourse(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+            var course = context.Courses.Find(courseId);
+            if (course != null)
+            {
+                context.Courses.Remove(course);
+                context.SaveChanges();
+            }
+            else
+            {
+                MessageBox.Show("Курс с таким ID не найден.");
+            }
+        }
+
+        public List<User> GetAvailableUsersForCourse(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+
+            var enrolledUserIds = context.UserCourses
+                .Where(uc => uc.CourseId == courseId)
+                .Select(uc => uc.UserId);
+
+            return context.Users
+                .Where(u => !enrolledUserIds.Contains(u.UserID) &&
+                            (u.UserRole == "Куратор" || u.UserRole == "Пользователь"))
+                .ToList();
+        }
+
+        public List<MaterialSection> GetCourseSections(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+            return context.MaterialSections
+                .Where(s => s.CourseId == courseId)
+                .Include(s => s.Materials)
+                .ThenInclude(m => m.Files)
+                .ToList();
+        }
+
+        public List<CourseMaterial> GetMaterialsWithoutSection(int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+            return context.CourseMaterials
+                .Where(m => m.CourseId == courseId && m.SectionId == null)
+                .Include(m => m.Files)
+                .ToList();
+        }
+
+        public void AddCourseMaterial(CourseMaterial newMaterial)
+        {
+            using var context = new KnowFlowDbContext();
+            context.CourseMaterials.Add(newMaterial);
+            context.SaveChanges();
+        }
     }
 }

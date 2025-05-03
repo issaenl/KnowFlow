@@ -55,7 +55,7 @@ namespace KnowFlow
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = loginBox.Text;
-            string password = passwordBox.Password;
+            string password = isPasswordVisible ? passwordTextBox.Text : passwordBox.Password;
 
             bool isUser = userData.VerifyUser(username, password);
             bool isCurator = userData.VerifyCurator(username, password);

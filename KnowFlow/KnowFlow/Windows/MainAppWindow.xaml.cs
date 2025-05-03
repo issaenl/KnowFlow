@@ -74,7 +74,7 @@ namespace KnowFlow.Windows
 
         private void MainPageButton_Click(object sender, RoutedEventArgs e)
         {
-            //MainFrame.Navigate(mainCoursesPage);
+            MainFrame.Navigate(mainCoursesPage);
             AddClassButton.IsEnabled = true;
         }
 

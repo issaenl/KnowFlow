@@ -25,8 +25,18 @@ namespace KnowFlow.Models
         [Column("materialDescription")]
         public string MaterialDescription { get; set; }
 
+        [Column("createdAt")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
+        [Column("createdBy")]
+        public string CreatedBy { get; set; }
+
         [ForeignKey("MaterialSection")]
         [Column("sectionId")]
         public int? SectionId { get; set; }
+
+        public virtual MaterialSection Section { get; set; }
+        public virtual List<MaterialFile> Files { get; set; } = new();
     }
 }

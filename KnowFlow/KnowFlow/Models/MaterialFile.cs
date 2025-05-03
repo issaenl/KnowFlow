@@ -25,5 +25,6 @@ namespace KnowFlow.Models
         [Column("fileName")]
         public string FileName { get; set; }
 
+        public virtual CourseMaterial CourseMaterial { get; set; }
     }
 }

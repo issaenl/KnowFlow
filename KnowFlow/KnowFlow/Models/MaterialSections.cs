@@ -22,5 +22,6 @@ namespace KnowFlow.Models
         [Column("sectionName")]
         public string SectionName { get; set; }
 
+        public virtual List<CourseMaterial> Materials { get; set; } = new();
     }
 }
