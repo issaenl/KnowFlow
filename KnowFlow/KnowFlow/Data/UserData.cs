@@ -15,7 +15,7 @@ namespace KnowFlow.Pages.Сlass
         public List<User> LoadUsers()
         {
             using var context = new KnowFlowDbContext();
-            return context.Users.ToList();
+            return context.Users.AsNoTracking().ToList();
         }
 
         private bool VerifyRole(string username, string password, string role)
@@ -73,6 +73,50 @@ namespace KnowFlow.Pages.Сlass
             else
             {
                 MessageBox.Show("Пользователь с таким ID не найден.");
+            }
+        }
+
+        public int GetUserIdByUsername(string username)
+        {
+            using var context = new KnowFlowDbContext();
+            return context.Users.FirstOrDefault(u => u.Username == username)?.UserID ?? -1;
+        }
+
+        public int AddCourse(Course course)
+        {
+            using var context = new KnowFlowDbContext();
+
+            var curator = context.Users.Find(course.CuratorId);
+            if (curator != null)
+            {
+                course.CuratorName = curator.Username;
+            }
+
+            context.Courses.Add(course);
+            context.SaveChanges();
+            return course.CourseId;
+        }
+
+        public List<Course> LoadUserCourses(int userId)
+        {
+            using var context = new KnowFlowDbContext();
+            return context.UserCourses
+                .Where(uc => uc.UserId == userId)
+                .Join(context.Courses,
+                    uc => uc.CourseId,
+                    c => c.CourseId,
+                    (uc, c) => c)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public void EnrollUserToCourse(int userId, int courseId)
+        {
+            using var context = new KnowFlowDbContext();
+            if (!context.UserCourses.Any(uc => uc.UserId == userId && uc.CourseId == courseId))
+            {
+                context.UserCourses.Add(new UserCourse { UserId = userId, CourseId = courseId });
+                context.SaveChanges();
             }
         }
     }

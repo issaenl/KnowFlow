@@ -63,9 +63,9 @@ namespace KnowFlow
             if (isUser || isCurator)
             {
                 MessageBox.Show("Авторизация пройдена!");
-                //var curatorMainWindow = new CuratorMainWindow(username, isUser);
-                //Close();
-                //curatorMainWindow.Show();
+                var mainAppWindow = new MainAppWindow(username, isUser);
+                Close();
+                mainAppWindow.Show();
             }
             else
             {
