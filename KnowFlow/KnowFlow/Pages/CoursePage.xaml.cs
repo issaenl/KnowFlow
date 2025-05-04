@@ -214,8 +214,7 @@ namespace KnowFlow.Pages
                     {
                         var saveDialog = new Microsoft.Win32.SaveFileDialog
                         {
-                            FileName = file.FileName,
-                            Filter = $"Файлы (*{Path.GetExtension(file.FileName)}|*{Path.GetExtension(file.FileName)}|Все файлы (*.*)|*.*"
+                            FileName = file.FileName
                         };
 
                         if (saveDialog.ShowDialog() == true)
@@ -236,96 +235,100 @@ namespace KnowFlow.Pages
 
         private void AddSection_Click(object sender, RoutedEventArgs e)
         {
-            //var inputDialog = new AddSectionWindow();
-            //if (inputDialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(inputDialog.Answer))
-            //{
-            //    _userData.AddMaterialSection(_course.CourseId, inputDialog.Answer);
-            //    LoadMaterials();
-            //}
+            var inputDialog = new AddSectionWindow();
+            if (inputDialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(inputDialog.Answer))
+            {
+                _userData.AddMaterialSection(_course.CourseId, inputDialog.Answer);
+                LoadMaterials();
+            }
         }
 
         private void EditMaterial_Click(object sender, RoutedEventArgs e)
         {
-            //if (sender is Button button && button.Tag is CourseMaterial material)
-            //{
-            //    var fullMaterial = _userData.GetMaterialById(material.MaterialId);
-            //    if (fullMaterial == null) return;
+            if (sender is Button button && button.Tag is CourseMaterial material)
+            {
+                var fullMaterial = _userData.GetMaterialById(material.MaterialId);
+                if (fullMaterial == null) return;
 
-            //    var sections = _userData.GetCourseSections(_course.CourseId);
-            //    var editWindow = new AddMaterialWindow(
-            //        _course.CourseId,
-            //        fullMaterial.Files.Select(f => f.FilePath).ToList(),
-            //        sections)
-            //    {
-            //        MaterialName = fullMaterial.MaterialName,
-            //        MaterialDescription = fullMaterial.MaterialDescription,
-            //        SelectedSectionId = fullMaterial.SectionId
-            //    };
+                var sections = _userData.GetCourseSections(_course.CourseId);
 
-            //    if (editWindow.ShowDialog() == true)
-            //    {
-            //        fullMaterial.MaterialName = editWindow.MaterialName;
-            //        fullMaterial.MaterialDescription = editWindow.MaterialDescription;
-            //        fullMaterial.SectionId = editWindow.SelectedSectionId;
+                var editWindow = new AddMaterialWindow(
+                    _course.CourseId,
+                    fullMaterial.Files.Select(f => f.FilePath).ToList(),
+                    sections)
+                {
+                    MaterialName = fullMaterial.MaterialName,
+                    MaterialDescription = fullMaterial.MaterialDescription,
+                    SelectedSectionId = fullMaterial.SectionId
+                };
 
-            //        fullMaterial.Files.Clear();
-            //        foreach (var filePath in editWindow.SavedFilePaths)
-            //        {
-            //            fullMaterial.Files.Add(new MaterialFile
-            //            {
-            //                FilePath = filePath,
-            //                FileName = Path.GetFileName(filePath)
-            //            });
-            //        }
+                if (editWindow.ShowDialog() == true)
+                {
+                    fullMaterial.MaterialName = editWindow.MaterialName;
+                    fullMaterial.MaterialDescription = editWindow.MaterialDescription;
+                    fullMaterial.SectionId = editWindow.SelectedSectionId;
 
-            //        _userData.UpdateCourseMaterial(fullMaterial);
-            //        LoadMaterials();
-            //    }
-            //}
+                    fullMaterial.Files = editWindow.SavedFilePaths.Select(path => new MaterialFile
+                    {
+                        FilePath = path,
+                        FileName = Path.GetFileName(path)
+                    }).ToList();
+
+                    try
+                    {
+                        MessageBox.Show("Изменения успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _userData.UpdateCourseMaterial(fullMaterial);
+                        LoadMaterials();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при сохранении: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         private void DeleteMaterial_Click(object sender, RoutedEventArgs e)
         {
-            //if (sender is Button button && button.Tag is CourseMaterial material)
-            //{
-            //    MessageBoxResult result = MessageBox.Show(
-            //        $"Вы уверены, что хотите удалить материал \"{material.MaterialName}\"?",
-            //        "Подтверждение удаления",
-            //        MessageBoxButton.YesNo,
-            //        MessageBoxImage.Warning);
+            if (sender is Button button && button.Tag is CourseMaterial material)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    $"Вы уверены, что хотите удалить материал \"{material.MaterialName}\"?",
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-            //    if (result == MessageBoxResult.Yes)
-            //    {
-            //        try
-            //        {
-            //            // Удаление файлов материала
-            //            foreach (var file in material.Files)
-            //            {
-            //                try
-            //                {
-            //                    if (File.Exists(file.FilePath))
-            //                    {
-            //                        File.Delete(file.FilePath);
-            //                    }
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Debug.WriteLine($"Ошибка при удалении файла: {ex.Message}");
-            //                }
-            //            }
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        foreach (var file in material.Files)
+                        {
+                            try
+                            {
+                                if (File.Exists(file.FilePath))
+                                {
+                                    File.Delete(file.FilePath);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Ошибка при удалении файла: {ex.Message}");
+                            }
+                        }
 
-            //            // Удаление материала из БД
-            //            _userData.DeleteMaterial(material.MaterialId);
-            //            LoadMaterials();
+                        _userData.DeleteMaterial(material.MaterialId);
+                        LoadMaterials();
 
-            //            MessageBox.Show("Материал успешно удален", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show($"Ошибка при удалении материала: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        }
-            //    }
-            //}
+                        MessageBox.Show("Материал успешно удален", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при удалении материала: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         private void MoreOptionsButton_Click(object sender, RoutedEventArgs e)

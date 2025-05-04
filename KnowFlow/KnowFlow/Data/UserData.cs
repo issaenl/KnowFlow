@@ -12,15 +12,14 @@ namespace KnowFlow.Pages.Сlass
 {
     public class UserData
     {
+        public KnowFlowDbContext context = new KnowFlowDbContext();
         public List<User> LoadUsers()
         {
-            using var context = new KnowFlowDbContext();
             return context.Users.AsNoTracking().ToList();
         }
 
         private bool VerifyRole(string username, string password, string role)
         {
-            using var context = new KnowFlowDbContext();
             var user = context.Users.FirstOrDefault(u => u.Username == username && u.UserRole == role);
             return user != null && BCrypt.Net.BCrypt.Verify(password, user.UserPassword);
         }
@@ -31,7 +30,6 @@ namespace KnowFlow.Pages.Сlass
 
         public void AddUser(string username, string password, string role)
         {
-            using var context = new KnowFlowDbContext();
 
             if (context.Users.Any(u => u.Username == username))
             {
@@ -50,7 +48,6 @@ namespace KnowFlow.Pages.Сlass
 
         public void ChangeRole(int userId, string role)
         {
-            using var context = new KnowFlowDbContext();
             var user = context.Users.Find(userId);
             if (user == null)
             {
@@ -63,7 +60,6 @@ namespace KnowFlow.Pages.Сlass
 
         public void DeleteUser(int userId)
         {
-            using var context = new KnowFlowDbContext();
             var user = context.Users.Find(userId);
             if (user != null)
             {
@@ -78,14 +74,11 @@ namespace KnowFlow.Pages.Сlass
 
         public int GetUserIdByUsername(string username)
         {
-            using var context = new KnowFlowDbContext();
             return context.Users.FirstOrDefault(u => u.Username == username)?.UserID ?? -1;
         }
 
         public int AddCourse(Course course)
         {
-            using var context = new KnowFlowDbContext();
-
             var curator = context.Users.Find(course.CuratorId);
             if (curator != null)
             {
@@ -99,7 +92,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<Course> LoadUserCourses(int userId)
         {
-            using var context = new KnowFlowDbContext();
             return context.UserCourses
                 .Where(uc => uc.UserId == userId)
                 .Join(context.Courses,
@@ -112,7 +104,6 @@ namespace KnowFlow.Pages.Сlass
 
         public void EnrollUserToCourse(int userId, int courseId)
         {
-            using var context = new KnowFlowDbContext();
             if (!context.UserCourses.Any(uc => uc.UserId == userId && uc.CourseId == courseId))
             {
                 context.UserCourses.Add(new UserCourse { UserId = userId, CourseId = courseId });
@@ -122,7 +113,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<User> GetCourseParticipants(int courseId)
         {
-            using var context = new KnowFlowDbContext();
             return context.UserCourses
                 .Where(uc => uc.CourseId == courseId)
                 .Join(context.Users,
@@ -134,8 +124,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<CourseMaterial> GetCourseMaterials(int courseId)
         {
-            using var context = new KnowFlowDbContext();
-
             return context.CourseMaterials
                 .Where(m => m.CourseId == courseId)
                 .Include(m => m.Files)
@@ -144,7 +132,6 @@ namespace KnowFlow.Pages.Сlass
 
         public void DeleteCourse(int courseId)
         {
-            using var context = new KnowFlowDbContext();
             var course = context.Courses.Find(courseId);
             if (course != null)
             {
@@ -159,8 +146,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<User> GetAvailableUsersForCourse(int courseId)
         {
-            using var context = new KnowFlowDbContext();
-
             var enrolledUserIds = context.UserCourses
                 .Where(uc => uc.CourseId == courseId)
                 .Select(uc => uc.UserId);
@@ -173,7 +158,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<MaterialSection> GetCourseSections(int courseId)
         {
-            using var context = new KnowFlowDbContext();
             return context.MaterialSections
                 .Where(s => s.CourseId == courseId)
                 .Include(s => s.Materials)
@@ -183,7 +167,6 @@ namespace KnowFlow.Pages.Сlass
 
         public List<CourseMaterial> GetMaterialsWithoutSection(int courseId)
         {
-            using var context = new KnowFlowDbContext();
             return context.CourseMaterials
                 .Where(m => m.CourseId == courseId && m.SectionId == null)
                 .Include(m => m.Files)
@@ -192,9 +175,106 @@ namespace KnowFlow.Pages.Сlass
 
         public void AddCourseMaterial(CourseMaterial newMaterial)
         {
-            using var context = new KnowFlowDbContext();
             context.CourseMaterials.Add(newMaterial);
             context.SaveChanges();
         }
+
+        public void DeleteMaterial(int materialId)
+        { 
+            var material = context.CourseMaterials
+                                  .Include(m => m.Files)
+                                  .FirstOrDefault(m => m.MaterialId == materialId);
+
+            if (material == null)
+                throw new Exception("Материал не найден");
+
+            context.MaterialFiles.RemoveRange(material.Files);
+            context.CourseMaterials.Remove(material);
+
+            context.SaveChanges();
+        }
+
+        public CourseMaterial GetMaterialById(int materialId)
+        {
+            return context.CourseMaterials
+                .Include(m => m.Files)
+                .FirstOrDefault(m => m.MaterialId == materialId);
+        }
+
+        public void UpdateCourseMaterial(CourseMaterial updatedMaterial)
+        {
+            var existing = context.CourseMaterials
+                .Include(m => m.Files)
+                .FirstOrDefault(m => m.MaterialId == updatedMaterial.MaterialId);
+
+            if (existing != null)
+            {
+                existing.MaterialName = updatedMaterial.MaterialName;
+                existing.MaterialDescription = updatedMaterial.MaterialDescription;
+                existing.SectionId = updatedMaterial.SectionId;
+
+                var filesToRemove = context.MaterialFiles
+                    .Where(f => f.MaterialId == existing.MaterialId)
+                    .ToList();
+
+                context.MaterialFiles.RemoveRange(filesToRemove);
+
+                foreach (var file in updatedMaterial.Files)
+                {
+                    file.MaterialId = existing.MaterialId;
+                    context.MaterialFiles.Add(file);
+                }
+
+                context.SaveChanges();
+            }
+        }
+
+        public int AddMaterialSection(int courseId, string sectionName)
+        {
+            var section = new MaterialSection
+            {
+                CourseId = courseId,
+                SectionName = sectionName
+            };
+
+            context.MaterialSections.Add(section);
+            context.SaveChanges();
+
+            return section.SectionId;
+        }
+
+        public bool UsernameExists(string username)
+        {
+            return context.Users.Any(u => u.Username == username);
+        }
+
+        public bool UpdateUser(string currentUsername, string newUsername, string newPassword)
+        {
+            try
+            {
+                var user = context.Users.FirstOrDefault(u => u.Username == currentUsername);
+                if (user == null)
+                {
+                    MessageBox.Show("Пользователь не найден");
+                    return false;
+                }
+
+                user.Username = newUsername;
+
+                if (!string.IsNullOrEmpty(newPassword))
+                {
+                    user.UserPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                }
+
+                context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении профиля: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

@@ -1,0 +1,24 @@
+﻿<Window x:Class="KnowFlow.Windows.AddSectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KnowFlow.Windows"
+        mc:Ignorable="d"
+        Title="AddSectionWindow" Height="120" Width="300" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Введите название раздела:" Grid.Row="0"/>
+        <TextBox x:Name="InputTextBox" Grid.Row="1" Margin="0 5"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Отмена" Width="80" Margin="0 0 10 0" Click="Cancel_Click"/>
+            <Button Content="OK" Width="80" Click="OK_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

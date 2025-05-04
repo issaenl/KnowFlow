@@ -80,8 +80,8 @@ namespace KnowFlow.Windows
 
         private void AccountButton_Click(object sender, RoutedEventArgs e)
         {
-            //var changeProfilePage = new ChangeProfilePage(currentCurator);
-            //MainFrame.Navigate(changeProfilePage);
+            var changeProfilePage = new ChangeProfilePage(currentCurator);
+            MainFrame.Navigate(changeProfilePage);
             AddClassButton.IsEnabled = false;
         }
     }
