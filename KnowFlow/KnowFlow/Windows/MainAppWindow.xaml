@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:KnowFlow.Windows"
         mc:Ignorable="d"
         Title="MainAppWindow" Height="450" Width="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

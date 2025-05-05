@@ -16,6 +16,7 @@ namespace KnowFlow.Data
         public DbSet<CourseMaterial> CourseMaterials { get; set; }
         public DbSet<MaterialFile> MaterialFiles { get; set; }
         public DbSet<MaterialSection> MaterialSections { get; set; }
+        public DbSet<Notice> Notices { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

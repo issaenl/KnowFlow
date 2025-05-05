@@ -24,7 +24,6 @@ namespace KnowFlow.Models
 
         [Column("userRole")]
         public string UserRole { get; set; }
-
     }
 
 }

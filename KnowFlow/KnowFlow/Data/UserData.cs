@@ -276,5 +276,59 @@ namespace KnowFlow.Pages.Сlass
             }
         }
 
+        public void AddNotice(Notice notice)
+        {
+            if (notice == null)
+                throw new ArgumentNullException(nameof(notice));
+
+            context.Notices.Add(notice);
+            context.SaveChanges();
+        }
+
+        public List<Notice> GetActiveNotices(int courseId)
+        {
+            var now = DateTime.Now;
+            return context.Notices
+                .Where(n => n.CourseId == courseId &&
+                           (n.ExpiresAt == null || n.ExpiresAt > now))
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        public List<Notice> GetAllNotices(int courseId)
+        {
+            return context.Notices
+                .Where(n => n.CourseId == courseId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        public void DeleteNotice(int noticeId)
+        {
+            var notice = context.Notices.Find(noticeId);
+            if (notice != null)
+            {
+                context.Notices.Remove(notice);
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdateNotice(Notice updatedNotice)
+        {
+            var existing = context.Notices.Find(updatedNotice.NoticeId);
+            if (existing != null)
+            {
+                existing.Title = updatedNotice.Title;
+                existing.Content = updatedNotice.Content;
+                existing.ExpiresAt = updatedNotice.ExpiresAt;
+                context.SaveChanges();
+            }
+        }
+
+        public Notice GetNoticeById(int noticeId)
+        {
+            return context.Notices
+                .FirstOrDefault(m => m.NoticeId == noticeId);
+        }
     }
 }

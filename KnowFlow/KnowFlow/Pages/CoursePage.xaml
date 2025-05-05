@@ -17,7 +17,7 @@
             Cursor="Hand">
                 <Expander x:Name="MaterialExpander" IsExpanded="False">
                     <Expander.Header>
-                        <Grid>
+                        <Grid Width= "{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Expander}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -52,7 +52,7 @@
                                    Foreground="#FF888888"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,40,0">
                                 <Button Content="✏️" 
                                 Click="EditMaterial_Click"
                                 Padding="5"
@@ -120,6 +120,82 @@
             </Border>
         </DataTemplate>
 
+        <DataTemplate x:Key="NoticeTemplate">
+            <Border Background="#FFF9F9F9" 
+            CornerRadius="4"
+            Padding="12"
+            Margin="0 0 0 10"
+            BorderBrush="#FFE0E0E0"
+            BorderThickness="1"
+            HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <TextBlock Text="📢" 
+                           FontSize="16"
+                           VerticalAlignment="Center"
+                           Margin="0 0 8 0"/>
+
+                        <StackPanel>
+                            <TextBlock Text="{Binding Title}" 
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#FF333333"
+                               TextWrapping="Wrap"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0 4 0 0">
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                   FontSize="11"
+                                   Foreground="#FF888888"/>
+                                <TextBlock Text=" • "
+                                   FontSize="11"
+                                   Foreground="#FF888888"/>
+                                <TextBlock Text="{Binding CreatedBy, StringFormat='Автор: {0}'}"
+                                   FontSize="11"
+                                   Foreground="#FF888888"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <Button Content="✏️" 
+                            
+                            Padding="5"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="EditNotice_Click"
+                            Tag="{Binding}"
+                            ToolTip="Редактировать объявление"
+                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}"/>
+
+                            <Button Content="🗑️" 
+                            Margin="5 0 0 0"
+                            Padding="5"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="DeleteNotice_Click"
+                            Tag="{Binding}"
+                            ToolTip="Удалить объявление"
+                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Expander IsExpanded="False" Margin="10 5 0 0" Padding="0">
+                        <Expander.Header>
+                            <TextBlock Text="Показать содержимое..." 
+                               FontSize="12"
+                               Foreground="#FF555555"
+                               FontStyle="Italic"/>
+                        </Expander.Header>
+
+                        <TextBlock Text="{Binding Content}" 
+                           FontSize="14"
+                           Foreground="#FF444444"
+                           TextWrapping="Wrap"
+                           Margin="0 5 0 0"/>
+                    </Expander>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
         <DataTemplate x:Key="CuratorTemplate">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Username}" Margin="5 2"/>
@@ -170,16 +246,24 @@
 
                 <Separator Margin="0 0 0 10"/>
 
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Name="AddMaterialButton" Content="+ Добавить материал" Margin="10 0 5 0" Click="AddMaterial_Click"/>
+                    <Button Name="AddSectionButton" Content="+ Добавить раздел" Margin="5 0 0 0" Click="AddSection_Click"/>
+                    <Button Name="AddNoticeButton" Content="+ Создать объявление" Margin="10 0 0 0" Click="AddNoticeButton_Click"/>
+                </StackPanel>
+
+                <TextBlock Text="Объявления" 
+                    FontSize="18" 
+                    FontWeight="Bold"
+                    Margin="0 0 0 10"/>
+
+                <ItemsControl x:Name="NoticeList" 
+                              ItemTemplate="{StaticResource NoticeTemplate}"/>
+
                 <TextBlock Text="Материалы" 
                            FontSize="18" 
                            FontWeight="Bold"
-                           Margin="0 0 0 10"/>
-
-                <StackPanel Orientation="Horizontal">
-                    <Button Name="AddMaterialButton" Content="+ Добавить материал" Margin="10 0 5 0" Click="AddMaterial_Click"/>
-                    <Button Name="AddSectionButton" Content="+ Добавить раздел" Margin="5 0 0 0" Click="AddSection_Click"/>
-                    <Button Name="AddTestButton" Content="+ Создать тест" Margin="10 0 0 0"/>
-                </StackPanel>
+                           Margin="0 20 0 10"/>
 
                 <ItemsControl x:Name="SectionsList">
                     <ItemsControl.ItemTemplate>

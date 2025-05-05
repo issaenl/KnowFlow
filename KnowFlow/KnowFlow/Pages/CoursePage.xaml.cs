@@ -17,6 +17,8 @@ namespace KnowFlow.Pages
         private Course _course;
         private string _currentUser;
         private readonly UserData _userData = new UserData();
+        private System.Windows.Threading.DispatcherTimer _noticesTimer;
+
         public bool IsUser { get; }
 
         public CoursePage(Course course, string currentUser, bool isUser) 
@@ -33,13 +35,21 @@ namespace KnowFlow.Pages
                 InviteButton.Visibility = Visibility.Collapsed;
                 AddMaterialButton.Visibility = Visibility.Collapsed;
                 AddSectionButton.Visibility = Visibility.Collapsed;
-                AddTestButton.Visibility = Visibility.Collapsed;
+                AddNoticeButton.Visibility = Visibility.Collapsed;
                 DeleteCourse.Visibility = Visibility.Collapsed;
             }
 
             LoadCourseData();
             LoadCourseUsers();
             LoadMaterials();
+            LoadNotices();
+
+            _noticesTimer = new System.Windows.Threading.DispatcherTimer();
+            _noticesTimer.Interval = TimeSpan.FromMinutes(1);
+            _noticesTimer.Tick += (s, e) => LoadNotices();
+            _noticesTimer.Start();
+            this.Unloaded += (s, e) => _noticesTimer.Stop();
+
         }
 
         private void LoadCourseData()
@@ -339,6 +349,108 @@ namespace KnowFlow.Pages
                 button.ContextMenu.PlacementTarget = button;
                 button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
                 button.ContextMenu.IsOpen = true;
+            }
+        }
+
+        private void AddNoticeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var noticeWindow = new CreateNoticeWindow(_course.CourseId, _currentUser);
+
+            if (noticeWindow.ShowDialog() == true && noticeWindow.CreatedNotice != null)
+            {
+                try
+                {
+                    _userData.AddNotice(noticeWindow.CreatedNotice);
+                    LoadNotices();
+                    MessageBox.Show("Объявление успешно добавлено!", "Успех",
+                                  MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при добавлении объявления: {ex.Message}",
+                                  "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void LoadNotices()
+        {
+            try
+            {
+                var notices = _userData.GetActiveNotices(_course.CourseId);
+                NoticeList.ItemsSource = notices;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке объявлений: {ex.Message}",
+                              "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DeleteNotice_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Notice notice)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    $"Вы уверены, что хотите удалить материал \"{notice.Title}\"?",
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _userData.DeleteNotice(notice.NoticeId);
+                        LoadNotices();
+
+                        MessageBox.Show("Материал успешно удален", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при удалении материала: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void EditNotice_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Notice notice)
+            {
+                var noticeId = notice.NoticeId;
+                var fullNotice = _userData.GetNoticeById(noticeId);
+
+                if (fullNotice == null)
+                {
+                    MessageBox.Show("Материал не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var editWindow = new CreateNoticeWindow(
+                    _course.CourseId,
+                    _currentUser)
+                {
+                    Title = fullNotice.Title,
+                    Content = fullNotice.Content,
+                };
+
+                if (editWindow.ShowDialog() == true)
+                {
+                    Title = editWindow.Title;
+                    Content = editWindow.Content;
+
+                    try
+                    {
+                        _userData.UpdateNotice(fullNotice);
+                        MessageBox.Show("Изменения успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadMaterials();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при сохранении изменений: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }
         }
     }
