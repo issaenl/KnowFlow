@@ -79,15 +79,27 @@ namespace KnowFlow.Pages.Сlass
 
         public int AddCourse(Course course)
         {
-            var curator = context.Users.Find(course.CuratorId);
-            if (curator != null)
+            try
             {
-                course.CuratorName = curator.Username;
-            }
+                context.Courses.Add(course);
+                context.SaveChanges();
 
-            context.Courses.Add(course);
-            context.SaveChanges();
-            return course.CourseId;
+                var defaultSection = new MaterialSection
+                {
+                    CourseId = course.CourseId,
+                    SectionName = "Без раздела"
+                };
+
+                context.MaterialSections.Add(defaultSection);
+                context.SaveChanges();
+
+                return course.CourseId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при добавлении курса: {ex.Message}\n{ex.InnerException?.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return -1;
+            }
         }
 
         public List<Course> LoadUserCourses(int userId)
@@ -107,6 +119,18 @@ namespace KnowFlow.Pages.Сlass
             if (!context.UserCourses.Any(uc => uc.UserId == userId && uc.CourseId == courseId))
             {
                 context.UserCourses.Add(new UserCourse { UserId = userId, CourseId = courseId });
+                context.SaveChanges();
+            }
+        }
+
+        public void RemoveUserFromCourse(int userId, int courseId)
+        {
+            var userCourse = context.UserCourses
+                .FirstOrDefault(uc => uc.UserId == userId && uc.CourseId == courseId);
+
+            if (userCourse != null)
+            {
+                context.UserCourses.Remove(userCourse);
                 context.SaveChanges();
             }
         }
@@ -158,11 +182,20 @@ namespace KnowFlow.Pages.Сlass
 
         public List<MaterialSection> GetCourseSections(int courseId)
         {
-            return context.MaterialSections
+            var sections = context.MaterialSections
                 .Where(s => s.CourseId == courseId)
-                .Include(s => s.Materials)
-                .ThenInclude(m => m.Files)
+                .OrderBy(s => s.SectionName == "Без раздела" ? 0 : 1)
+                .ThenBy(s => s.SectionName)
                 .ToList();
+
+            foreach (var section in sections)
+            {
+                section.Materials = context.CourseMaterials
+                    .Where(m => m.CourseId == courseId && m.SectionId == section.SectionId)
+                    .ToList();
+            }
+
+            return sections;
         }
 
         public List<CourseMaterial> GetMaterialsWithoutSection(int courseId)

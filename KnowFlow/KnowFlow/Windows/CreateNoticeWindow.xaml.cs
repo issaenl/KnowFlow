@@ -21,6 +21,8 @@ namespace KnowFlow.Windows
         public ObservableCollection<TimeSpan> AvailableTimes { get; } = new ObservableCollection<TimeSpan>();
         private readonly int _courseId;
         private readonly string _createdBy;
+        private Notice editingNotice = null;
+        private bool isEditing => editingNotice != null;
 
         public Notice CreatedNotice { get; private set; }
 
@@ -38,13 +40,29 @@ namespace KnowFlow.Windows
 
         
 
-        public CreateNoticeWindow(int courseId, string createdBy)
+        public CreateNoticeWindow(int courseId, string createdBy, Notice noticeToEdit = null)
         {
             InitializeComponent();
             _courseId = courseId;
             _createdBy = createdBy;
             DataContext = this;
             InitializeTimeOptions();
+
+            if (noticeToEdit != null)
+            {
+                editingNotice = noticeToEdit;
+
+                TitleTextBox.Text = editingNotice.Title;
+                ContentTextBox.Text = editingNotice.Content;
+
+                if (editingNotice.ExpiresAt.HasValue)
+                {
+                    ExpirationCheckBox.IsChecked = true;
+                    ExpirationPanel.IsEnabled = true;
+                    ExpirationDatePicker.SelectedDate = editingNotice.ExpiresAt.Value.Date;
+                    ExpirationTimeMaskedTextBox.Text = editingNotice.ExpiresAt.Value.ToString("HH:mm");
+                }
+            }
         }
 
         private void InitializeTimeOptions()
@@ -86,15 +104,7 @@ namespace KnowFlow.Windows
                 return;
             }
 
-            var notice = new Notice
-            {
-                Title = TitleTextBox.Text,
-                Content = ContentTextBox.Text,
-                CreatedAt = DateTime.Now,
-                CreatedBy = _createdBy,
-                CourseId = _courseId,
-                ExpiresAt = null
-            };
+            DateTime? expiresAt = null;
 
             if (ExpirationCheckBox.IsChecked == true)
             {
@@ -106,10 +116,9 @@ namespace KnowFlow.Windows
                 }
 
                 TimeSpan selectedTime = GetSelectedTime();
+                expiresAt = ExpirationDatePicker.SelectedDate.Value.Add(selectedTime);
 
-                notice.ExpiresAt = ExpirationDatePicker.SelectedDate.Value.Add(selectedTime);
-
-                if (notice.ExpiresAt <= DateTime.Now)
+                if (expiresAt <= DateTime.Now)
                 {
                     MessageBox.Show("Дата окончания должна быть в будущем", "Ошибка",
                                   MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -117,7 +126,26 @@ namespace KnowFlow.Windows
                 }
             }
 
-            CreatedNotice = notice;
+            if (isEditing)
+            {
+                editingNotice.Title = TitleTextBox.Text;
+                editingNotice.Content = ContentTextBox.Text;
+                editingNotice.ExpiresAt = expiresAt;
+                CreatedNotice = editingNotice;
+            }
+            else
+            {
+                CreatedNotice = new Notice
+                {
+                    Title = TitleTextBox.Text,
+                    Content = ContentTextBox.Text,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = _createdBy,
+                    CourseId = _courseId,
+                    ExpiresAt = expiresAt
+                };
+            }
+
             DialogResult = true;
             Close();
         }

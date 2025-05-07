@@ -124,6 +124,34 @@ namespace KnowFlow.Pages
             }
         }
 
+        private void QuitCourseMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+            $"Вы действительно хотите покинуть курс \"{_course.CourseName}\"?",
+            "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    int currentUserId = _userData.GetUserIdByUsername(_currentUser);
+                    _userData.RemoveUserFromCourse(currentUserId, _course.CourseId);
+
+                    MessageBox.Show("Вы покинули курс.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    if (Window.GetWindow(this) is MainAppWindow mainAppWindow)
+                    {
+                        var mainPage = new MainCoursesPage(_currentUser);
+                        mainAppWindow.MainFrame.Navigate(mainPage);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при выходе из курса: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         private void AddMaterial_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
@@ -178,20 +206,6 @@ namespace KnowFlow.Pages
             try
             {
                 var sections = _userData.GetCourseSections(_course.CourseId);
-                var noSectionMaterials = _userData.GetMaterialsWithoutSection(_course.CourseId);
-
-                if (noSectionMaterials.Any())
-                {
-                    sections.Add(new MaterialSection
-                    {
-                        SectionId = -1,
-                        CourseId = _course.CourseId,
-                        SectionName = "Без раздела",
-
-                        Materials = noSectionMaterials
-                    });
-                }
-
                 SectionsList.ItemsSource = sections;
             }
             catch (Exception ex)
@@ -418,33 +432,23 @@ namespace KnowFlow.Pages
         {
             if (sender is Button button && button.Tag is Notice notice)
             {
-                var noticeId = notice.NoticeId;
-                var fullNotice = _userData.GetNoticeById(noticeId);
+                var fullNotice = _userData.GetNoticeById(notice.NoticeId);
 
                 if (fullNotice == null)
                 {
-                    MessageBox.Show("Материал не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Объявление не найдено.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var editWindow = new CreateNoticeWindow(
-                    _course.CourseId,
-                    _currentUser)
-                {
-                    Title = fullNotice.Title,
-                    Content = fullNotice.Content,
-                };
+                var editWindow = new CreateNoticeWindow(_course.CourseId, _currentUser, fullNotice);
 
                 if (editWindow.ShowDialog() == true)
                 {
-                    Title = editWindow.Title;
-                    Content = editWindow.Content;
-
                     try
                     {
                         _userData.UpdateNotice(fullNotice);
                         MessageBox.Show("Изменения успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadMaterials();
+                        LoadNotices(); 
                     }
                     catch (Exception ex)
                     {

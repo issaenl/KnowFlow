@@ -234,6 +234,7 @@
                         <Button.ContextMenu>
                             <ContextMenu Name="OptionsContextMenu">
                                 <MenuItem Name="DeleteCourse" Header="Удалить курс" Click="DeleteCourseMenuItem_Click"/>
+                                <MenuItem Name="QuitCourse" Header="Покинуть курс" Click="QuitCourseMenuItem_Click"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>

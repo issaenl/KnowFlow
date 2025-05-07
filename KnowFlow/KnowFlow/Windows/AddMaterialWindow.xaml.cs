@@ -52,6 +52,7 @@ namespace KnowFlow.Windows
             SectionComboBox.ItemsSource = Sections;
             SectionComboBox.DisplayMemberPath = "SectionName";
             SectionComboBox.SelectedValuePath = "SectionId";
+            SectionComboBox.SelectedItem = Sections.FirstOrDefault(s => s.SectionName == "Без раздела");
             UpdateFileList();
         }
 

@@ -55,7 +55,8 @@ namespace KnowFlow.Windows
                     CourseName = editor.Course.CourseName,
                     CourseDescription = editor.Course.CourseDescription,
                     Color = editor.Course.Color.ToString(),
-                    CuratorId = curatorId
+                    CuratorId = curatorId,
+                    CuratorName = currentCurator
                 };
 
                 int courseId = userData.AddCourse(newCourse);
@@ -74,6 +75,10 @@ namespace KnowFlow.Windows
 
         private void MainPageButton_Click(object sender, RoutedEventArgs e)
         {
+            if (mainCoursesPage != null)
+            {
+                mainCoursesPage.LoadCourses();
+            }
             MainFrame.Navigate(mainCoursesPage);
             AddClassButton.IsEnabled = true;
         }
