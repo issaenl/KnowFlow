@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace KnowFlow.Models
 {
@@ -28,5 +29,6 @@ namespace KnowFlow.Models
         [Column("maxAttemps")]
         public int? MaxAttemps { get; set; }
 
+        public ObservableCollection<Question> Questions { get; set; } = new();
     }
 }

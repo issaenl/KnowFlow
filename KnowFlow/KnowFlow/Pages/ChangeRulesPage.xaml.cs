@@ -72,6 +72,7 @@ namespace KnowFlow.Pages
             {
                 try
                 {
+                    Logger.Log($"Изменена роль пользователя: {_selectedUser.Username} -> {newRole}");
                     _userData.ChangeRole(_selectedUser.UserID, newRole);
                     MessageBox.Show("Роль успешно изменена!");
                     LoadUsers();

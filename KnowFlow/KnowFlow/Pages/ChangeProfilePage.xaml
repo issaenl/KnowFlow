@@ -4,10 +4,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Title="ChangeProfilePage" Height="300" Width="800"
+      Title="ChangeProfilePage"
       Background="White">
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel.LayoutTransform>
+                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+            </StackPanel.LayoutTransform>
             <TextBlock Text="Изменение профиля" FontSize="20" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center"/>
 
             <TextBlock Text="Имя пользователя" Margin="0,5"/>

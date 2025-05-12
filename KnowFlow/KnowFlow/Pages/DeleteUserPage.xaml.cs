@@ -63,6 +63,7 @@ namespace KnowFlow.Pages
             {
                 try
                 {
+                    Logger.Log($"Удалён пользователь: {_selectedUser.Username}");
                     _userData.DeleteUser(_selectedUser.UserID); 
                     MessageBox.Show("Пользователь успешно удален!");
                     LoadUsers();

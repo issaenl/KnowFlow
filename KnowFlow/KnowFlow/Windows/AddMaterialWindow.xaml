@@ -13,9 +13,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Название материала:"/>
@@ -47,8 +46,8 @@
         <TextBox x:Name="DescriptionTextBox" Grid.Row="8" Height="110"/>
 
         <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Отмена" Width="80" Margin="0 0 10 0" Click="Cancel_Click"/>
-            <Button Content="Сохранить" Width="80" Click="Save_Click"/>
+            <Button Content="Отмена" Margin="0 0 10 0" Click="Cancel_Click"/>
+            <Button Content="Сохранить" Click="Save_Click"/>
         </StackPanel>
     </Grid>
 </Window>

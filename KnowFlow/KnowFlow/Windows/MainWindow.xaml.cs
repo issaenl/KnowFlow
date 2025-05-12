@@ -25,6 +25,7 @@ namespace KnowFlow
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Log("Попытка входа за администратора.");
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow
             {
                 Owner = this
@@ -41,12 +42,14 @@ namespace KnowFlow
                 if (isFixedAdmin || isDatabaseAdmin)
                 {
                     MessageBox.Show("Авторизация пройдена!");
+                    Logger.Log($"Успешный вход за администратора: {login}.");
                     var adminMainWindow = new AdminMainWindow();
                     Close();
                     adminMainWindow.Show();
                 }
                 else
                 {
+                    Logger.Log($"Ошибка входа за администратора.");
                     MessageBox.Show("Неверный пароль или логин!");
                 }
             }

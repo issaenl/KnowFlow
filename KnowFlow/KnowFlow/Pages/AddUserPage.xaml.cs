@@ -47,6 +47,7 @@ namespace KnowFlow.Pages
                 return;
             }
 
+            Logger.Log($"Добавлен пользователь: {username}, роль: {role}");
             userData.AddUser(username, password, role);
             LoadUsers();
         }

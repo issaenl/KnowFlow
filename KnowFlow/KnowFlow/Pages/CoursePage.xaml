@@ -209,7 +209,7 @@
         </DataTemplate>
     </Page.Resources>
 
-    <Grid>
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
@@ -251,6 +251,7 @@
                     <Button Name="AddMaterialButton" Content="+ Добавить материал" Margin="10 0 5 0" Click="AddMaterial_Click"/>
                     <Button Name="AddSectionButton" Content="+ Добавить раздел" Margin="5 0 0 0" Click="AddSection_Click"/>
                     <Button Name="AddNoticeButton" Content="+ Создать объявление" Margin="10 0 0 0" Click="AddNoticeButton_Click"/>
+                    <Button Name="AddTestButton" Content="+ Создать тест" Margin="10 0 0 0" Click="AddTestButton_Click"/>
                 </StackPanel>
 
                 <TextBlock Text="Объявления" 

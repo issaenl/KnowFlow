@@ -115,6 +115,7 @@ namespace KnowFlow.Pages
                     {
                         var mainCoursesPage = new MainCoursesPage(_currentUser);
                         mainAppWindow.MainFrame.Navigate(mainCoursesPage);
+                        mainAppWindow.AddClassButton.IsEnabled = true;
                     }
                 }
                 catch (Exception ex)
@@ -143,6 +144,7 @@ namespace KnowFlow.Pages
                     {
                         var mainPage = new MainCoursesPage(_currentUser);
                         mainAppWindow.MainFrame.Navigate(mainPage);
+                        mainAppWindow.AddClassButton.IsEnabled = true;
                     }
                 }
                 catch (Exception ex)
@@ -455,6 +457,16 @@ namespace KnowFlow.Pages
                         MessageBox.Show($"Ошибка при сохранении изменений: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
+            }
+        }
+
+        private void AddTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Window.GetWindow(this) is MainAppWindow mainWindow)
+            {
+                var testPage = new CreateTestPage();
+                mainWindow.MainFrame.Navigate(testPage);
+                mainWindow.AddClassButton.IsEnabled = false;
             }
         }
     }

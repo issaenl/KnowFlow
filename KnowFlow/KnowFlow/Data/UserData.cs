@@ -7,6 +7,7 @@ using System.Windows;
 using BCrypt.Net;
 using System.Diagnostics;
 using KnowFlow.Data;
+using System.Collections.ObjectModel;
 
 namespace KnowFlow.Pages.Сlass
 {
@@ -363,5 +364,7 @@ namespace KnowFlow.Pages.Сlass
             return context.Notices
                 .FirstOrDefault(m => m.NoticeId == noticeId);
         }
+
+        
     }
 }

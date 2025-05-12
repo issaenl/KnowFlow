@@ -28,13 +28,20 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Button Content="Добавить пользователя" Grid.Row="0" HorizontalAlignment="Left" Margin="10,10,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="Button_Click"/>
+                <Button Content="Добавить пользователя" Grid.Row="0" HorizontalAlignment="Stretch" 
+                        Margin="10,10,10,0" VerticalAlignment="Top" Click="Button_Click"
+                        />
 
-                <Button Content="Изменить права" Grid.Row="1" HorizontalAlignment="Left" Margin="10,10,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="Button_Click_1"/>
+                <Button Content="Изменить права" Grid.Row="1" HorizontalAlignment="Stretch" 
+                        Margin="10,10,10,0" VerticalAlignment="Top" Click="Button_Click_1"
+                        />
 
-                <Button Content="Удалить пользователя" Grid.Row="2" HorizontalAlignment="Left" Margin="10,10,10,0" VerticalAlignment="Top" Width="150" Height="24" Click="Button_Click_2"/>
+                <Button Content="Удалить пользователя" Grid.Row="2" HorizontalAlignment="Stretch" 
+                        Margin="10,10,10,0" VerticalAlignment="Top" Click="Button_Click_2"/>
 
-                <Button Content="Выйти" Grid.Row="4" HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="150" Height="24" Click="LogoutButton_Click"/>
+                <Button Content="Выйти" Grid.Row="4" HorizontalAlignment="Stretch" 
+                        Margin="10,10,10,10" VerticalAlignment="Bottom" 
+                        Click="LogoutButton_Click"/>
             </Grid>
         </Border>
 

@@ -9,15 +9,15 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Введите название раздела:" Grid.Row="0"/>
         <TextBox x:Name="InputTextBox" Grid.Row="1" Margin="0 5"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Отмена" Width="80" Margin="0 0 10 0" Click="Cancel_Click"/>
+            <Button Content="Отмена" Margin="0 0 10 0" Click="Cancel_Click"/>
             <Button Content="OK" Width="80" Click="OK_Click"/>
         </StackPanel>
     </Grid>
