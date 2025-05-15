@@ -32,7 +32,7 @@
                         Margin="10,10,10,0" VerticalAlignment="Top" Click="Button_Click"
                         />
 
-                <Button Content="Изменить права" Grid.Row="1" HorizontalAlignment="Stretch" 
+                <Button Content="Изменить пользователя" Grid.Row="1" HorizontalAlignment="Stretch" 
                         Margin="10,10,10,0" VerticalAlignment="Top" Click="Button_Click_1"
                         />
 

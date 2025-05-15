@@ -66,7 +66,7 @@ namespace KnowFlow.Pages
                 if (userData.UpdateUser(currentUsername, newUsername, passwordChanged ? newPassword : null))
                 {
                     currentUsername = newUsername;
-                    MessageBox.Show("Профиль успешно обнавлен!");
+                    MessageBox.Show("Профиль успешно обновлен!");
 
                     if (Window.GetWindow(this) is MainAppWindow mainWindow)
                     {

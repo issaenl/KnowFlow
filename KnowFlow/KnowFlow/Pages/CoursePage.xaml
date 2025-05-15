@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="1200"
       Title="CoursePage" Background="White">
 
     <Page.Resources>
@@ -25,7 +25,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
- 
+
                             <TextBlock Grid.Column="0" 
                                Text="📄" 
                                FontSize="16"
@@ -207,6 +207,92 @@
                 <TextBlock Text="{Binding Username}" Margin="5 2"/>
             </StackPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="TestTemplate">
+            <Border Background="#FFF5F5F5" 
+            CornerRadius="4"
+            Padding="12 8"
+            Margin="0 4 0 4"
+            HorizontalAlignment ="Stretch"
+            Cursor="Hand"
+            MouseLeftButtonUp="TestTile_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" 
+                                   Text="📝" 
+                                   FontSize="16"
+                                   VerticalAlignment="Center"
+                                   Margin="0 0 12 0"/>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Title}" 
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF333333"/>
+                        <StackPanel Orientation="Horizontal" Margin="0 4 0 0">
+                            <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                           FontSize="11"
+                                           Foreground="#FF888888"/>
+                            <TextBlock Text=" • "
+                                           FontSize="11"
+                                           Foreground="#FF888888"/>
+                            <TextBlock Text="{Binding CreatedBy, StringFormat='Автор: {0}'}"
+                                           FontSize="11"
+                                           Foreground="#FF888888"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="✏️" 
+                                    Padding="5"
+                                    Click="EditTest_Click"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Tag="{Binding}"
+                                    ToolTip="Редактировать тест"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button Content="🗑️" 
+                                    Margin="5 0 0 0"
+                                    Padding="5"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Tag="{Binding}"
+                                    ToolTip="Удалить тест"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid Margin="10">
@@ -283,8 +369,10 @@
                            FontWeight="Bold"
                            Margin="0 20 0 10"/>
 
-                <!--<ItemsControl x:Name="TestsList" 
-                              ItemTemplate="{StaticResource TestTemplate}"/>-->
+                <ItemsControl x:Name="TestsList" 
+                  ItemTemplate="{StaticResource TestTemplate}"
+                  Margin="0 0 0 20"/>
+                
             </StackPanel>
         </ScrollViewer>
 

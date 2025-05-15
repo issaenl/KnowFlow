@@ -1,5 +1,6 @@
 ﻿using KnowFlow.Models;
 using KnowFlow.Pages.Сlass;
+using KnowFlow.Windows;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -14,20 +15,75 @@ namespace KnowFlow.Pages
         public ObservableCollection<Question> Questions { get; set; }
         public UserData userData;
         public Course _course;
+        public Test currentTest;
+        public string currentUser;
+        public bool IsUser;
+        private bool isEditMode;
 
-        public CreateTestPage(Course course)
+        public CreateTestPage(Course course, string _currentUser, bool isUser, Test test = null)
         {
             InitializeComponent();
             Questions = new ObservableCollection<Question>();
             userData = new UserData();
             _course = course;
+            currentUser = _currentUser;
+            IsUser = isUser;
             QuestionsListBox.ItemsSource = Questions;
+
+            if (test != null)
+            {
+                currentTest = test;
+                isEditMode = true;
+                LoadTestData();
+            }
+            else
+            {
+                currentTest = new Test
+                {
+                    CourseId = _course.CourseId,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = currentUser
+                };
+                isEditMode = false;
+            }
+        }
+
+        private void LoadTestData()
+        {
+            TestTitleBox.Text = currentTest.Title;
+
+            if (currentTest.TimeLimit.HasValue)
+                TimeLimitTextBox.Text = currentTest.TimeLimit.Value.ToString();
+
+            if (currentTest.MaxAttemps.HasValue)
+                AttemptsTextBox.Text = currentTest.MaxAttemps.Value.ToString();
+
+            if (currentTest.Questions != null)
+            {
+                foreach (var question in currentTest.Questions)
+                {
+                    Questions.Add(new Question
+                    {
+                        QuestionId = question.QuestionId,
+                        QuestionText = question.QuestionText,
+                        QuestionType = question.QuestionType,
+                        Points = question.Points,
+                        Answers = new ObservableCollection<Answer>(question.Answers.Select(a => new Answer
+                        {
+                            AnswerId = a.AnswerId,
+                            AnswerText = a.AnswerText,
+                            IsCorrect = a.IsCorrect
+                        }))
+                    });
+                }
+            }
         }
 
         private void AddQuestionButton_Click(object sender, RoutedEventArgs e)
         {
             var question = new Question
             {
+                QuestionId = Questions.Count > 0 ? Questions.Max(q => q.QuestionId) + 1 : 1,
                 QuestionType = 1,
                 Points = 1,
                 Answers = new ObservableCollection<Answer>(),
@@ -123,17 +179,28 @@ namespace KnowFlow.Pages
 
             try
             {
-                var test = new Test
-                {
-                    CourseId = _course.CourseId,
-                    Title = TestTitleBox.Text,
-                    TimeLimit = timeLimit,
-                    MaxAttemps = maxAttempts,
-                    Questions = new ObservableCollection<Question>(Questions)
-                };
+                currentTest.Title = TestTitleBox.Text;
+                currentTest.TimeLimit = timeLimit;
+                currentTest.MaxAttemps = maxAttempts;
+                currentTest.Questions = new ObservableCollection<Question>(Questions);
 
-                userData.SaveTest(test);
-                MessageBox.Show("Тест успешно сохранен");
+                if (isEditMode)
+                {
+                    userData.UpdateTest(currentTest);
+                    MessageBox.Show("Тест успешно обновлен");
+                }
+                else
+                {
+                    userData.SaveTest(currentTest);
+                    MessageBox.Show("Тест успешно сохранен");
+                }
+
+                if (Window.GetWindow(this) is MainAppWindow mainWindow)
+                {
+                    var coursePage = new CoursePage(_course, currentUser, IsUser);
+                    mainWindow.MainFrame.Navigate(coursePage);
+                    mainWindow.AddClassButton.IsEnabled = false;
+                }
             }
             catch (Exception ex)
             {

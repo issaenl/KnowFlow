@@ -29,6 +29,12 @@ namespace KnowFlow.Models
         [Column("maxAttemps")]
         public int? MaxAttemps { get; set; }
 
+        [Column("createdAt")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("createdBy")]
+        public string CreatedBy { get; set; }
+
         public ObservableCollection<Question> Questions { get; set; } = new();
     }
 }

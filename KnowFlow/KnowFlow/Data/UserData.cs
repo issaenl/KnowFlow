@@ -59,6 +59,26 @@ namespace KnowFlow.Pages.Сlass
             context.SaveChanges();
         }
 
+        public void ResetPassword(int userId, string defaultPassword)
+        {
+            try
+            {
+                var user = context.Users.Find(userId);
+                if (user == null)
+                {
+                    MessageBox.Show("Пользователь с таким ID не найден.");
+                    return;
+                }
+                
+                user.UserPassword = BCrypt.Net.BCrypt.HashPassword(defaultPassword);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при обновлении профиля: {ex.Message}");
+            }
+        }
+
         public void DeleteUser(int userId)
         {
             var user = context.Users.Find(userId);
@@ -390,6 +410,110 @@ namespace KnowFlow.Pages.Сlass
             catch (Exception ex)
             {
                 throw new Exception("Ошибка при сохранении теста", ex);
+            }
+        }
+
+        public List<Test> GetCourseTests(int courseId)
+        {
+            return context.Tests
+                .Where(t => t.CourseId == courseId)
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToList();
+        }
+
+        public Test GetTestById(int testId)
+        {
+            return context.Tests
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefault(t => t.TestId == testId);
+        }
+
+        public void UpdateTest(Test updatedTest)
+        {
+            var existingTest = context.Tests
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefault(t => t.TestId == updatedTest.TestId);
+
+            if (existingTest == null)
+            {
+                throw new Exception("Тест не найден");
+            }
+
+            existingTest.Title = updatedTest.Title;
+            existingTest.TimeLimit = updatedTest.TimeLimit;
+            existingTest.MaxAttemps = updatedTest.MaxAttemps;
+
+            var questionsToRemove = existingTest.Questions
+                .Where(q => !updatedTest.Questions.Any(uq => uq.QuestionId == q.QuestionId))
+                .ToList();
+
+            foreach (var question in questionsToRemove)
+            {
+                context.Questions.Remove(question);
+            }
+
+            foreach (var updatedQuestion in updatedTest.Questions)
+            {
+                var existingQuestion = existingTest.Questions
+                    .FirstOrDefault(q => q.QuestionId == updatedQuestion.QuestionId);
+
+                if (existingQuestion != null)
+                {
+                    existingQuestion.QuestionText = updatedQuestion.QuestionText;
+                    existingQuestion.QuestionType = updatedQuestion.QuestionType;
+                    existingQuestion.Points = updatedQuestion.Points;
+
+                    var answersToRemove = existingQuestion.Answers
+                        .Where(a => !updatedQuestion.Answers.Any(ua => ua.AnswerId == a.AnswerId))
+                        .ToList();
+
+                    foreach (var answer in answersToRemove)
+                    {
+                        context.Answers.Remove(answer);
+                    }
+
+                    foreach (var updatedAnswer in updatedQuestion.Answers)
+                    {
+                        var existingAnswer = existingQuestion.Answers
+                            .FirstOrDefault(a => a.AnswerId == updatedAnswer.AnswerId);
+
+                        if (existingAnswer != null)
+                        {
+                            existingAnswer.AnswerText = updatedAnswer.AnswerText;
+                            existingAnswer.IsCorrect = updatedAnswer.IsCorrect;
+                        }
+                        else
+                        {
+                            updatedAnswer.QuestionId = existingQuestion.QuestionId;
+                            context.Answers.Add(updatedAnswer);
+                        }
+                    }
+                }
+                else
+                {
+                    updatedQuestion.TestId = existingTest.TestId;
+                    context.Questions.Add(updatedQuestion);
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public void DeleteTest(int testId)
+        {
+            var test = context.Tests
+                .Include(t => t.Questions)
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefault(t => t.TestId == testId);
+
+            if (test != null)
+            {
+                context.Tests.Remove(test);
+                context.SaveChanges();
             }
         }
     }

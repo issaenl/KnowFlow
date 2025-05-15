@@ -38,6 +38,9 @@
         <ComboBox x:Name="RoleComboBox" Grid.Row="2" Grid.Column="1" Margin="5" Width="200" HorizontalAlignment="Left">
         </ComboBox>
 
-        <Button x:Name="ChangeUserRoleButton" Content="Изменить роль" Grid.Row="3" Grid.Column="1" Margin="5" Width="150" HorizontalAlignment="Left" Click="ChangeUserRoleButton_Click"/>
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+            <Button x:Name="ChangeUserRoleButton" Content="Изменить роль"  Margin="5" Width="150" HorizontalAlignment="Left" Click="ChangeUserRoleButton_Click"/>
+            <Button x:Name="ResetPasswordButton" Content="Сбросить пароль" Margin="5,5,0,5" Width="150" HorizontalAlignment="Left" Click="ResetPasswordButton_Click"/>
+        </StackPanel>
     </Grid>
 </Page>

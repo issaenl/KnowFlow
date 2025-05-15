@@ -3,6 +3,7 @@ using KnowFlow.Pages.Сlass;
 using KnowFlow.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace KnowFlow.Pages
 
         public bool IsUser { get; }
 
-        public CoursePage(Course course, string currentUser, bool isUser) 
+        public CoursePage(Course course, string currentUser, bool isUser)
         {
             InitializeComponent();
             _course = course;
@@ -43,6 +44,7 @@ namespace KnowFlow.Pages
             LoadCourseUsers();
             LoadMaterials();
             LoadNotices();
+            LoadTests();
 
             _noticesTimer = new System.Windows.Threading.DispatcherTimer();
             _noticesTimer.Interval = TimeSpan.FromMinutes(1);
@@ -193,7 +195,7 @@ namespace KnowFlow.Pages
                     try
                     {
                         _userData.AddCourseMaterial(newMaterial);
-                        LoadMaterials(); 
+                        LoadMaterials();
                     }
                     catch (Exception ex)
                     {
@@ -450,7 +452,7 @@ namespace KnowFlow.Pages
                     {
                         _userData.UpdateNotice(fullNotice);
                         MessageBox.Show("Изменения успешно сохранены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                        LoadNotices(); 
+                        LoadNotices();
                     }
                     catch (Exception ex)
                     {
@@ -464,10 +466,85 @@ namespace KnowFlow.Pages
         {
             if (Window.GetWindow(this) is MainAppWindow mainWindow)
             {
-                var testPage = new CreateTestPage(_course);
+                var testPage = new CreateTestPage(_course, _currentUser, IsUser);
                 mainWindow.MainFrame.Navigate(testPage);
                 mainWindow.AddClassButton.IsEnabled = false;
             }
         }
+
+        private void LoadTests()
+        {
+            try
+            {
+                var tests = _userData.GetCourseTests(_course.CourseId);
+                TestsList.ItemsSource = tests;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке тестов: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void EditTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Test test)
+            {
+                if (Window.GetWindow(this) is MainAppWindow mainWindow)
+                {
+                    var testPage = new CreateTestPage(_course, _currentUser, IsUser, test);
+                    mainWindow.MainFrame.Navigate(testPage);
+                    mainWindow.AddClassButton.IsEnabled = false;
+                }
+            }
+        }
+
+        private void DeleteTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Test test)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    $"Вы уверены, что хотите удалить тест \"{test.Title}\"?",
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _userData.DeleteTest(test.TestId);
+                        LoadTests();
+                        MessageBox.Show("Тест успешно удален", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при удалении теста: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void TestTile_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Border border && border.DataContext is Test test)
+            {
+                var fullTest = _userData.GetTestById(test.TestId);
+
+                if (fullTest == null)
+                {
+                    MessageBox.Show("Тест не найден", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (Window.GetWindow(this) is MainAppWindow mainWindow)
+                {
+                    var testPage = new TestPage(fullTest, _currentUser);
+                    mainWindow.MainFrame.Navigate(testPage);
+                    mainWindow.AddClassButton.IsEnabled = false;
+                }
+            }
+        }
+
+       
     }
 }

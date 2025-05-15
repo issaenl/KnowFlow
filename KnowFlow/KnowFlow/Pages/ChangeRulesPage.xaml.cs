@@ -21,12 +21,14 @@ namespace KnowFlow.Pages
     {
         private readonly UserData _userData = new UserData();
         private User _selectedUser;
+        private string defaultPassword = "Aa1111!!";
 
         public ChangeRulesPage()
         {
             InitializeComponent();
             InitializeRoleComboBox();
             LoadUsers();
+
         }
 
         private void InitializeRoleComboBox()
@@ -123,6 +125,38 @@ namespace KnowFlow.Pages
             UsersDataGrid.ItemsSource = string.IsNullOrEmpty(searchText)
                 ? allUsers
                 : allUsers.Where(u => u.Username.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void ResetPasswordButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedUser = UsersDataGrid.SelectedItem as User;
+
+            if (_selectedUser == null)
+            {
+                MessageBox.Show("Выберите пользователя!");
+                return;
+            }
+
+            var confirmResult = MessageBox.Show(
+                $"Вы уверены, что хотите сбросить пароля для {_selectedUser.Username}?",
+                "Подтверждение",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (confirmResult == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    Logger.Log($"Сброше пароль: {_selectedUser.Username}");
+                    _userData.ResetPassword(_selectedUser.UserID, defaultPassword);
+                    MessageBox.Show("Пароль пользователя успешно сброшен!");
+                    LoadUsers();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка: {ex.Message}");
+                }
+            }
         }
     }
 }

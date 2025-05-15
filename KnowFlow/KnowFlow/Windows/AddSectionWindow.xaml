@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnowFlow.Windows"
         mc:Ignorable="d"
-        Title="AddSectionWindow" Height="120" Width="300" WindowStartupLocation="CenterScreen">
+        Title="AddSectionWindow" Height="150" Width="300" WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

@@ -21,7 +21,7 @@
                         materialDesign:ColorZoneAssist.Mode="PrimaryLight"
                         HorizontalAlignment="Stretch">
 
-                <TextBox Text="{Binding Title}"
+                <TextBox
                          Name="TestTitleBox"
                          Margin="10"
                          materialDesign:HintAssist.Hint="Название теста"
