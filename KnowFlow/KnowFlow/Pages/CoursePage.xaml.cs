@@ -464,7 +464,7 @@ namespace KnowFlow.Pages
         {
             if (Window.GetWindow(this) is MainAppWindow mainWindow)
             {
-                var testPage = new CreateTestPage();
+                var testPage = new CreateTestPage(_course);
                 mainWindow.MainFrame.Navigate(testPage);
                 mainWindow.AddClassButton.IsEnabled = false;
             }

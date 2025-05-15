@@ -42,6 +42,7 @@ namespace KnowFlow.Models
         [Column("points")]
         public int Points { get; set; } = 1;
 
+        public virtual Test Test { get; set; }
         public ObservableCollection<Answer> Answers { get; set; } = new();
 
         public event PropertyChangedEventHandler PropertyChanged;

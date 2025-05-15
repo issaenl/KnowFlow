@@ -214,7 +214,7 @@ namespace KnowFlow.Pages.Сlass
         }
 
         public void DeleteMaterial(int materialId)
-        { 
+        {
             var material = context.CourseMaterials
                                   .Include(m => m.Files)
                                   .FirstOrDefault(m => m.MaterialId == materialId);
@@ -365,6 +365,32 @@ namespace KnowFlow.Pages.Сlass
                 .FirstOrDefault(m => m.NoticeId == noticeId);
         }
 
-        
+        public void SaveTest(Test test)
+        {
+            if (test == null)
+                throw new ArgumentNullException(nameof(test));
+
+            try
+            {
+                foreach (var question in test.Questions)
+                {
+                    question.QuestionId = 0;
+                    question.TestId = test.TestId;
+
+                    foreach (var answer in question.Answers)
+                    {
+                        answer.AnswerId = 0;
+                        answer.QuestionId = question.QuestionId;
+                    }
+                }
+
+                context.Tests.Add(test);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ошибка при сохранении теста", ex);
+            }
+        }
     }
 }

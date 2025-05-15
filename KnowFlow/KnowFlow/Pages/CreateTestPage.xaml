@@ -10,9 +10,8 @@
         <converter:IntToRadioVisibilityConverter x:Key="IntToRadioVisibilityConverter"/>
         <converter:IntToCheckVisibilityConverter x:Key="IntToCheckVisibilityConverter"/>
     </Page.Resources>
-
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="100 20">
+    
+    <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -22,7 +21,8 @@
                         materialDesign:ColorZoneAssist.Mode="PrimaryLight"
                         HorizontalAlignment="Stretch">
 
-                <TextBox Name="TestTitleTextBox"
+                <TextBox Text="{Binding Title}"
+                         Name="TestTitleBox"
                          Margin="10"
                          materialDesign:HintAssist.Hint="Название теста"
                          HorizontalAlignment="Stretch"/>
@@ -42,6 +42,12 @@
                         Margin="10"
                         HorizontalAlignment="Left"
                         Click="AddQuestionButton_Click"/>
+
+                <Button Name="SaveTestButton"
+                            Content="Сохранить тест"
+                            Margin="10"
+                            HorizontalAlignment="Left"
+                            Click="SaveTestButton_Click"/>
             </StackPanel>
 
             <ListBox Name="QuestionsListBox"
@@ -53,10 +59,16 @@
                     <DataTemplate>
                         <Border Background="#F5F5F5" CornerRadius="4" Padding="10" Margin="5">
                             <StackPanel HorizontalAlignment="Stretch">
-                                <TextBox Name="QuestionTitleTextBox"
+                                <TextBox Text="{Binding QuestionText, Mode=TwoWay}"
                                          Margin="5"
                                          materialDesign:HintAssist.Hint="Название вопроса"
                                          HorizontalAlignment="Stretch"/>
+
+                                <Button Name="DeleteQuestionButton"
+                                            Content="Удалить вопрос"
+                                            Margin="5"
+                                            HorizontalAlignment="Right"
+                                            Click="DeleteQuestionButton_Click"/>
 
                                 <ComboBox Name="QuestionTypeComboBox"
                                       Margin="5"
@@ -68,8 +80,8 @@
                                     <ComboBoxItem Content="Несколько верных вариантов"/>
                                 </ComboBox>
 
-                                <TextBox Name="PointsTextBox"
-                                         Margin="5" Text="1"
+                                <TextBox Text="{Binding Points, Mode=TwoWay}"
+                                         Margin="5"
                                          materialDesign:HintAssist.Hint="Очки"
                                          HorizontalAlignment="Left"
                                          Width="100"/>
@@ -88,23 +100,26 @@
                          Margin="5,0"
                          materialDesign:HintAssist.Hint="Текст ответа" />
 
-                                                <!-- Радиокнопка: один верный -->
-                                                <RadioButton Content="Верный"
+                                                <RadioButton Content="Верный"  IsChecked="{Binding IsCorrect, Mode=TwoWay}"
                                                  Margin="10,0"
                                                  VerticalAlignment="Center"
-                                                 GroupName="{Binding QuestionId}"
+                                                 GroupName="{Binding GetHashCode}"
                                                  Visibility="{Binding DataContext.QuestionType,
                                                   RelativeSource={RelativeSource AncestorType=ListBoxItem},
                                                   Converter={StaticResource IntToRadioVisibilityConverter}}" />
 
-
-                                                <!-- Чекбокс: несколько верных -->
-                                                <CheckBox Content="Верный"
+                                            <CheckBox Content="Верный" IsChecked="{Binding IsCorrect, Mode=TwoWay}"
                                                   Margin="10,0"
                                                   VerticalAlignment="Center"
                                                   Visibility="{Binding DataContext.QuestionType,
                                                    RelativeSource={RelativeSource AncestorType=ListBoxItem},
                                                    Converter={StaticResource IntToCheckVisibilityConverter}}"/>
+
+                                                <Button Content="Удалить"
+                                                        Margin="10,0"
+                                                        VerticalAlignment="Center"
+                                                        Click="DeleteAnswerButton_Click"/>
+
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -115,5 +130,4 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-    </ScrollViewer>
 </Page>

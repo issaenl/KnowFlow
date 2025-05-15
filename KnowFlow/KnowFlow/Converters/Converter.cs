@@ -15,8 +15,11 @@ namespace KnowFlow.Converters
         {
             return (int)value == 1 ? Visibility.Visible : Visibility.Collapsed;
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class IntToCheckVisibilityConverter : IValueConverter
@@ -25,7 +28,10 @@ namespace KnowFlow.Converters
         {
             return (int)value == 2 ? Visibility.Visible : Visibility.Collapsed;
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
     }
 }

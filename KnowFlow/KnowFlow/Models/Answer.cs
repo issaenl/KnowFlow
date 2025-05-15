@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace KnowFlow.Models
 {
     [Table("Answers")]
-    public class Answer
+    public class Answer : INotifyPropertyChanged
     {
         [Key]
         [Column("answerId")]
@@ -20,10 +21,52 @@ namespace KnowFlow.Models
         [Column("questionId")]
         public int QuestionId { get; set; }
 
+        [Required]
         [Column("answerText")]
-        public string AnswerText { get; set; }
+        private string answerText;
+        public string AnswerText
+        {
+            get => answerText;
+            set
+            {
+                if (answerText != value)
+                {
+                    answerText = value;
+                    OnPropertyChanged(nameof(AnswerText));
+                }
+            }
+        }
 
         [Column("isCorrect")]
-        public bool IsCorrect { get; set; } = false;
+        private bool isCorrect;
+        public bool IsCorrect
+        {
+            get => isCorrect;
+            set
+            {
+
+                if (isCorrect != value)
+                {
+                    if (value && Question?.QuestionType == 1)
+                    {
+                        foreach (var answer in Question.Answers)
+                        {
+                            if (answer != this)
+                            {
+                                answer.IsCorrect = false;
+                            }
+                        }
+                    }
+                    isCorrect = value;
+                    OnPropertyChanged(nameof(IsCorrect));
+                }
+            }
+        }
+
+        public Question Question { get; set; } = null!;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
