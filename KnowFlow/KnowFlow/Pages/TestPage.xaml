@@ -18,9 +18,10 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <RadioButton Content="{Binding AnswerText}"
-                                 IsChecked="{Binding IsUserSelected, Mode=TwoWay}"
-                                 GroupName="{Binding QuestionId}"
-                                 Margin="5"/>
+                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                         GroupName="{Binding QuestionId}"
+                         Checked="RadioButton_Checked"
+                         Margin="5"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -31,16 +32,20 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <CheckBox Content="{Binding AnswerText}"
-                              IsChecked="{Binding IsUserSelected, Mode=TwoWay}"
-                              Margin="5"/>
+                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                          Checked="CheckBox_Checked"
+                          Unchecked="CheckBox_Unchecked"
+                          Margin="5"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </DataTemplate>
 
         <DataTemplate x:Key="TextInputTemplate">
-            <TextBox Text="{Binding UserAnswer, Mode=TwoWay}" Margin="0,5"
-                      materialDesign:HintAssist.Hint="Введите ваш ответ"/>
+            <TextBox Text="{Binding UserAnswer, UpdateSourceTrigger=PropertyChanged}" 
+             Margin="0,5"
+             TextChanged="TextBox_TextChanged"
+             materialDesign:HintAssist.Hint="Введите ваш ответ"/>
         </DataTemplate>
 
         <converter:QuestionTemplateSelector x:Key="QuestionTemplateSelector"
@@ -92,7 +97,7 @@
         <Button Grid.Row="2" 
                 Content="Завершить тест" 
                 HorizontalAlignment="Center"
-                FontSize="16"
+                FontSize="16" Click="Button_Click"
                 />
     </Grid>
 </Page>

@@ -52,7 +52,7 @@
                                    Foreground="#FF888888"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,40,0">
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0">
                                 <Button Content="✏️" 
                                 Click="EditMaterial_Click"
                                 Padding="5"

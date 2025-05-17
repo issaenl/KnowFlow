@@ -516,5 +516,58 @@ namespace KnowFlow.Pages.Сlass
                 context.SaveChanges();
             }
         }
+
+        public int SaveTestResult(TestResult result)
+        {
+            try
+            {
+                context.TestResults.Add(result);
+                context.SaveChanges();
+                return result.ResultId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении результата теста: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public int GetUserTestAttemptNumber(int userId, int testId)
+        {
+            return context.TestResults
+                .Where(r => r.UserId == userId && r.TestId == testId)
+                .Count() + 1;
+        }
+
+        public bool HasAttemptsLeft(int userId, int testId, int? maxAttempts)
+        {
+            if (maxAttempts == null) return true;
+
+            int attemptsUsed = context.TestResults
+                .Count(r => r.UserId == userId && r.TestId == testId);
+
+            return attemptsUsed < maxAttempts;
+        }
+
+        public bool CheckTextAnswer(int questionId, string userAnswer)
+        {
+            if (string.IsNullOrWhiteSpace(userAnswer))
+                return false;
+
+            var correctAnswers = context.Answers
+                .Where(a => a.QuestionId == questionId && a.IsCorrect)
+                .Select(a => a.AnswerText.Trim())
+                .ToList();
+
+            if (!correctAnswers.Any())
+                return false;
+
+            var userAnswerNormalized = userAnswer.Trim();
+
+            return correctAnswers.Any(correctAnswer =>
+                string.Equals(correctAnswer, userAnswerNormalized, StringComparison.OrdinalIgnoreCase));
+        }
+
+
     }
 }

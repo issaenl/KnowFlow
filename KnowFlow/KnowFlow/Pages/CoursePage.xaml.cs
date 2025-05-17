@@ -538,9 +538,18 @@ namespace KnowFlow.Pages
 
                 if (Window.GetWindow(this) is MainAppWindow mainWindow)
                 {
-                    var testPage = new TestPage(fullTest, _currentUser);
-                    mainWindow.MainFrame.Navigate(testPage);
-                    mainWindow.AddClassButton.IsEnabled = false;
+                    int _userId = _userData.GetUserIdByUsername(_currentUser);
+                    if (!_userData.HasAttemptsLeft(_userId, test.TestId, test.MaxAttemps))
+                    {
+                        MessageBox.Show("Вы исчерпали все попытки для этого теста!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    else
+                    {
+                        var testPage = new TestPage(fullTest, _currentUser);
+                        mainWindow.MainFrame.Navigate(testPage);
+                        mainWindow.AddClassButton.IsEnabled = false;
+                    }
                 }
             }
         }

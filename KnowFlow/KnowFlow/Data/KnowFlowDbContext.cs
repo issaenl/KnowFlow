@@ -1,5 +1,6 @@
 ﻿using KnowFlow.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,18 @@ namespace KnowFlow.Data
         public DbSet<Test> Tests { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<TestResult> TestResults { get; set; }
+        public DbSet<QuestionResult> QuestionResults { get; set; }
+        public DbSet<AnswerSelection> AnswerSelections { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=KnowFlow;Uid=root;Pwd=1111;", new MySqlServerVersion(new Version(8, 0, 23)));
+            optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=KnowFlow;Uid=root;Pwd=1111;",
+                new MySqlServerVersion(new Version(8, 0, 23)))
+                .LogTo(Console.WriteLine, LogLevel.Information) // ← покажет SQL и ошибки
+                .EnableSensitiveDataLogging();
         }
 
 

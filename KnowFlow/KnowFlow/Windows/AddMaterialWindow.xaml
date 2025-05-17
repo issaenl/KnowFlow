@@ -43,7 +43,7 @@
           Text="Без раздела"/>
 
         <TextBlock Text="Описание материала:" Grid.Row="7"/>
-        <TextBox x:Name="DescriptionTextBox" Grid.Row="8" Height="110"/>
+        <TextBox x:Name="DescriptionTextBox" Grid.Row="8" Margin="5"/>
 
         <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Отмена" Margin="0 0 10 0" Click="Cancel_Click"/>
