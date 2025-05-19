@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="Добавление курса" Height="320" Width="400"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize" WindowStyle="ToolWindow" Background="White"
+        ResizeMode="NoResize" Background="White"
         >
     <Grid Margin="10">
         <Grid.RowDefinitions>

@@ -180,7 +180,8 @@ namespace KnowFlow.Pages
                         MaterialName = addMaterialWindow.MaterialName,
                         MaterialDescription = addMaterialWindow.MaterialDescription,
                         SectionId = addMaterialWindow.SelectedSectionId,
-                        CreatedBy = _currentUser
+                        CreatedBy = _currentUser,
+                        Files = new ObservableCollection<MaterialFile>()
                     };
 
                     foreach (var filePath in addMaterialWindow.SavedFilePaths)
@@ -296,11 +297,16 @@ namespace KnowFlow.Pages
                     fullMaterial.MaterialDescription = editWindow.MaterialDescription;
                     fullMaterial.SectionId = editWindow.SelectedSectionId;
 
-                    fullMaterial.Files = editWindow.SavedFilePaths.Select(path => new MaterialFile
+                    fullMaterial.Files.Clear();
+
+                    foreach (var path in editWindow.SavedFilePaths)
                     {
-                        FilePath = path,
-                        FileName = Path.GetFileName(path)
-                    }).ToList();
+                        fullMaterial.Files.Add(new MaterialFile
+                        {
+                            FilePath = path,
+                            FileName = Path.GetFileName(path)
+                        });
+                    }
 
                     try
                     {
@@ -554,6 +560,55 @@ namespace KnowFlow.Pages
             }
         }
 
-       
+        private void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is MaterialFile file)
+            {
+                try
+                {
+                    if (!File.Exists(file.FilePath))
+                    {
+                        MessageBox.Show("Файл не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    var saveDialog = new Microsoft.Win32.SaveFileDialog
+                    {
+                        FileName = file.FileName,
+                        Title = "Сохранить файл"
+                    };
+
+                    if (saveDialog.ShowDialog() == true)
+                    {
+                        try
+                        {
+                            File.Copy(file.FilePath, saveDialog.FileName, true);
+                            MessageBox.Show("Файл успешно сохранен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при работе с файлом: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void ViewResults_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is Test test)
+            {
+                if (Window.GetWindow(this) is MainAppWindow mainWindow)
+                {
+                    var resultsPage = new TestResultsPage(test);
+                    mainWindow.MainFrame.Navigate(resultsPage);
+                    mainWindow.AddClassButton.IsEnabled = false;
+                }
+            }
+        }
     }
 }

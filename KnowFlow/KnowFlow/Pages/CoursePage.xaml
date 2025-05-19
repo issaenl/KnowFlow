@@ -34,11 +34,11 @@
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding MaterialName}" 
-                                   FontSize="14"
+                                   FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="#FF333333"/>
                                 <TextBlock Text="{Binding MaterialDescription}"
-                                   FontSize="12"
+                                   FontSize="14"
                                    Foreground="#FF666666"
                                    FontStyle="Italic"/>
                             </StackPanel>
@@ -97,7 +97,7 @@
                         </Grid>
                     </Expander.Header>
 
-                    <ItemsControl ItemsSource="{Binding Files}" Margin="10 5 0 0">
+                    <ItemsControl ItemsSource="{Binding Files}" Margin="10 5 0 0" Background="#FFF5F5F5">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -112,6 +112,15 @@
                                        FontSize="12"
                                        Foreground="#FF888888"
                                        Margin="5 0 0 0"/>
+                                    <Button Content="📥"
+                                        Margin="5 0 0 0"
+                                        Padding="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="SaveFile_Click"
+                                        Tag="{Binding}"
+                                        ToolTip="Сохранить файл"
+                                        VerticalAlignment="Center"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -157,24 +166,46 @@
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
                             <Button Content="✏️" 
-                            
-                            Padding="5"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Click="EditNotice_Click"
-                            Tag="{Binding}"
-                            ToolTip="Редактировать объявление"
-                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}"/>
+                                Padding="5"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="EditNotice_Click"
+                                Tag="{Binding}"
+                                ToolTip="Редактировать объявление"
+                                VerticalAlignment="Top">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
                             <Button Content="🗑️" 
-                            Margin="5 0 0 0"
-                            Padding="5"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Click="DeleteNotice_Click"
-                            Tag="{Binding}"
-                            ToolTip="Удалить объявление"
-                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}"/>
+                                Margin="5 0 0 0"
+                                Padding="5"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="DeleteNotice_Click"
+                                Tag="{Binding}"
+                                ToolTip="Удалить объявление"
+                                VerticalAlignment="Top">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
                         </StackPanel>
                     </StackPanel>
 
@@ -231,7 +262,7 @@
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Title}" 
-                                       FontSize="14"
+                                       FontSize="16"
                                        FontWeight="SemiBold"
                                        Foreground="#FF333333"/>
                         <StackPanel Orientation="Horizontal" Margin="0 4 0 0">
@@ -248,15 +279,35 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="📊"
+                            Margin="0 0 5 0"
+                        Padding="5"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="ViewResults_Click"
+                        Tag="{Binding}"
+                        ToolTip="Просмотреть результаты"
+                        VerticalAlignment="Center">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
                         <Button Content="✏️" 
-                                    Padding="5"
-                                    Click="EditTest_Click"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Tag="{Binding}"
-                                    ToolTip="Редактировать тест"
-                                    VerticalAlignment="Center"
-                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}">
+                            Padding="5"
+                            Click="EditTest_Click"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Tag="{Binding}"
+                            ToolTip="Редактировать тест"
+                            VerticalAlignment="Center">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -270,14 +321,14 @@
                         </Button>
 
                         <Button Content="🗑️" 
-                                    Margin="5 0 0 0"
-                                    Padding="5"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Tag="{Binding}"
-                                    ToolTip="Удалить тест"
-                                    VerticalAlignment="Center"
-                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=Page}, Path=IsUser}">
+                            Margin="5 0 0 0"
+                            Padding="5"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Tag="{Binding}"
+                            ToolTip="Удалить тест"
+                            Click="DeleteTest_Click"
+                            VerticalAlignment="Center">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -289,6 +340,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+
                     </StackPanel>
                 </Grid>
             </Border>

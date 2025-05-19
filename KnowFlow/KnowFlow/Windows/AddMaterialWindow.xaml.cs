@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using KnowFlow.Pages.Сlass;
+using System.Collections.ObjectModel;
 
 namespace KnowFlow.Windows
 {
@@ -23,7 +24,7 @@ namespace KnowFlow.Windows
     public partial class AddMaterialWindow : Window
     {
         public List<MaterialSection> Sections { get; set; }
-        public List<string> SavedFilePaths { get; private set; } = new List<string>();
+        public ObservableCollection<string> SavedFilePaths { get; private set; } = new ObservableCollection<string>();
         private readonly List<string> _filePaths = new List<string>();
 
         public string MaterialName

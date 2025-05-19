@@ -30,6 +30,8 @@ namespace KnowFlow.Models
         [Column("finishedAt")]
         public DateTime FinishedAt { get; set; }
 
+        public virtual Test Test { get; set; }
+        public virtual User User { get; set; }
         public virtual ObservableCollection<QuestionResult> QuestionResults { get; set; }
     }
 }

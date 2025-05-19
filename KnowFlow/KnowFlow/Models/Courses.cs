@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -26,5 +27,9 @@ namespace KnowFlow.Models
         public int CuratorId { get; set; }
         [Column("curatorName")]
         public string CuratorName { get; set; }
+
+        public ObservableCollection<MaterialSection> MaterialSections { get; set; }
+        public ObservableCollection<Test> Tests { get; set; }
+        public ObservableCollection<Notice> Notices { get; set; }
     }
 }

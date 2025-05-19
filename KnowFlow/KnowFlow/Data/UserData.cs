@@ -213,6 +213,7 @@ namespace KnowFlow.Pages.Сlass
             {
                 section.Materials = context.CourseMaterials
                     .Where(m => m.CourseId == courseId && m.SectionId == section.SectionId)
+                    .Include(m => m.Files)
                     .ToList();
             }
 
@@ -486,10 +487,16 @@ namespace KnowFlow.Pages.Сlass
                             existingAnswer.AnswerText = updatedAnswer.AnswerText;
                             existingAnswer.IsCorrect = updatedAnswer.IsCorrect;
                         }
+
                         else
                         {
-                            updatedAnswer.QuestionId = existingQuestion.QuestionId;
-                            context.Answers.Add(updatedAnswer);
+                            var newAnswer = new Answer
+                            {
+                                AnswerText = updatedAnswer.AnswerText,
+                                IsCorrect = updatedAnswer.IsCorrect,
+                                QuestionId = existingQuestion.QuestionId
+                            };
+                            context.Answers.Add(newAnswer);
                         }
                     }
                 }
@@ -568,6 +575,27 @@ namespace KnowFlow.Pages.Сlass
                 string.Equals(correctAnswer, userAnswerNormalized, StringComparison.OrdinalIgnoreCase));
         }
 
+        public List<TestResultDisplay> GetTestResults(int testId)
+        {
+            return context.TestResults
+                .Include(r => r.QuestionResults)
+                    .ThenInclude(q => q.Question)
+                .Include(r => r.QuestionResults)
+                    .ThenInclude(q => q.AnswerSelections)
+                        .ThenInclude(s => s.Answer)
+                .Include(r => r.User)
+                .Where(r => r.TestId == testId)
+                .Select(r => new TestResultDisplay
+                {
+                    Username = r.User.Username,
+                    StartedAt = r.StartedAt,
+                    CompletedAt = r.FinishedAt,
+                    TotalPoints = r.QuestionResults.Sum(q => q.PointsEarned),
+                    QuestionResults = r.QuestionResults
+                })
+                .ToList();
+        }
 
-    }
+
+    }    
 }

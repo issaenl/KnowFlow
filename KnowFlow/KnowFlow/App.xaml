@@ -7,9 +7,13 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="#FF80CBC4" SecondaryColor="Indigo" />
+                <materialDesign:CustomColorTheme BaseTheme="Light" 
+                                                 PrimaryColor="#92a079" 
+                                                 SecondaryColor="Black"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
+ 

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace KnowFlow.Models
 {
@@ -37,6 +38,6 @@ namespace KnowFlow.Models
         public int? SectionId { get; set; }
 
         public virtual MaterialSection Section { get; set; }
-        public virtual List<MaterialFile> Files { get; set; } = new();
+        public virtual ObservableCollection<MaterialFile> Files { get; set; }
     }
 }

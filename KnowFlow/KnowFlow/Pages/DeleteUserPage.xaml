@@ -34,6 +34,6 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button x:Name="DeleteUserButton" Content="Удалить пользователя" Grid.Row="2" Grid.Column="1" Margin="5" Width="150" HorizontalAlignment="Left" Click="DeleteUserButton_Click" />
+        <Button x:Name="DeleteUserButton" Content="Удалить пользователя" Grid.Row="2" Grid.Column="1" Margin="5" HorizontalAlignment="Left" Click="DeleteUserButton_Click" />
     </Grid>
 </Page>

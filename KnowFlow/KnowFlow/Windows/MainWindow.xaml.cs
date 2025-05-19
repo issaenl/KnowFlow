@@ -36,10 +36,9 @@ namespace KnowFlow
                 string login = adminPasswordWindow.Login;
                 string password = adminPasswordWindow.Password;
 
-                bool isFixedAdmin = (login == "admin" && password == "12345678");
-                bool isDatabaseAdmin = userData.IsAdmin(login, password);
+                bool isAdmin = IsAdmin(login, password);
 
-                if (isFixedAdmin || isDatabaseAdmin)
+                if (isAdmin)
                 {
                     MessageBox.Show("Авторизация пройдена!");
                     Logger.Log($"Успешный вход за администратора: {login}.");
@@ -55,6 +54,20 @@ namespace KnowFlow
             }
         }
 
+        private bool IsAdmin(string login, string password)
+        {
+            bool isFixedAdmin = (login == "admin" && password == "12345678");
+            bool isDatabaseAdmin = userData.IsAdmin(login, password);
+            if (isFixedAdmin || isDatabaseAdmin)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = loginBox.Text;
@@ -62,11 +75,12 @@ namespace KnowFlow
 
             bool isUser = userData.VerifyUser(username, password);
             bool isCurator = userData.VerifyCurator(username, password);
+            bool isAdmin = IsAdmin(username, password);
 
-            if (isUser || isCurator)
+            if (isUser || isCurator || isAdmin)
             {
                 MessageBox.Show("Авторизация пройдена!");
-                var mainAppWindow = new MainAppWindow(username, isUser);
+                var mainAppWindow = new MainAppWindow(username, isUser, isAdmin);
                 Close();
                 mainAppWindow.Show();
             }

@@ -69,6 +69,17 @@ namespace KnowFlow.Pages
             }
 
             InitializeComponent();
+            this.Unloaded += TestPage_Unloaded;
+        }
+
+        private void TestPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled)
+            {
+                timer.Stop();
+            }
+            this.Unloaded -= TestPage_Unloaded;
+            timer.Tick -= Timer_Tick;
         }
 
         private void Timer_Tick(object sender, EventArgs e)

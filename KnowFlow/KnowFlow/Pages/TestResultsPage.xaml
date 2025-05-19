@@ -1,0 +1,46 @@
+﻿<Page x:Class="KnowFlow.Pages.TestResultsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="TestResultsPage" Background="White">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Результаты тестирования" 
+                   FontSize="20" FontWeight="Bold" Margin="0 0 0 10"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 10">
+            <ComboBox x:Name="DateComboBox" Width="200" Margin="0 0 10 0"
+                      materialDesign:HintAssist.Hint="Выберите дату"
+                      DisplayMemberPath="DateString"
+                      SelectedValuePath="Date"
+                      SelectionChanged="DateComboBox_SelectionChanged"/>
+            <Button Content="Сбросить фильтр" Margin="10 0 0 0" Click="ResetFilter_Click"/>
+            <Button Content="Экспорт в Excel" Margin="10 0 0 0" Click="ExportButton_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="ResultsGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Пользователь" Binding="{Binding Username}" Width="*"/>
+                <DataGridTextColumn Header="Дата прохождения" Binding="{Binding CompletedAt, StringFormat=dd.MM.yyyy HH:mm}" Width="*"/>
+                <DataGridTextColumn Header="Баллы" Binding="{Binding TotalPoints}" Width="*"/>
+                <DataGridTemplateColumn Header="Ответы">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="📄" Click="ViewAnswers_Click" Tag="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

@@ -62,19 +62,7 @@ namespace KnowFlow.Pages
             {
                 foreach (var question in currentTest.Questions)
                 {
-                    Questions.Add(new Question
-                    {
-                        QuestionId = question.QuestionId,
-                        QuestionText = question.QuestionText,
-                        QuestionType = question.QuestionType,
-                        Points = question.Points,
-                        Answers = new ObservableCollection<Answer>(question.Answers.Select(a => new Answer
-                        {
-                            AnswerId = a.AnswerId,
-                            AnswerText = a.AnswerText,
-                            IsCorrect = a.IsCorrect
-                        }))
-                    });
+                    Questions.Add(question);
                 }
             }
         }

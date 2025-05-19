@@ -23,7 +23,7 @@
                  MaxLength="200" TextWrapping="Wrap"/>
 
         <TextBlock Grid.Row="2" Text="Текст объявления:"/>
-        <TextBox Grid.Row="3" x:Name="ContentTextBox" FontSize="14" 
+        <TextBox Grid.Row="3" x:Name="ContentTextBox" FontSize="14" MaxLength="3000" 
                  AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
                  Margin="0 10"/>
 
@@ -59,7 +59,7 @@
                     Width="100" Margin="0 0 20 0"
                     Click="CancelButton_Click"/>
             <Button x:Name="PublishButton" Content="Опубликовать"
-                    Width="120"
+
                     Click="PublishButton_Click"/>
         </StackPanel>
     </Grid>

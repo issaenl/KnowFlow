@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace KnowFlow.Models
 
         [Column("userRole")]
         public string UserRole { get; set; }
+
+        public ObservableCollection<TestResult> Results { get; set; }
     }
 
 }

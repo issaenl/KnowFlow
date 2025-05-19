@@ -13,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace KnowFlow.Windows
@@ -24,13 +25,20 @@ namespace KnowFlow.Windows
         UserData userData = new UserData();
         MainCoursesPage mainCoursesPage;
         public bool IsUser;
+        public bool IsAdmin;
 
         public string AccountInitial => currentCurator?.Length > 0 ? currentCurator[0].ToString().ToUpper() : "A";
-        public MainAppWindow(string currentCurator, bool isUser)
+        public MainAppWindow(string currentCurator, bool isUser, bool isAdmin)
         {
             InitializeComponent();
 
             IsUser = isUser;
+            IsAdmin = isAdmin;
+
+            if(IsAdmin)
+            {
+                AddClassButton.Visibility = Visibility.Collapsed;
+            }
 
             if (IsUser)
             {
@@ -88,6 +96,25 @@ namespace KnowFlow.Windows
             var changeProfilePage = new ChangeProfilePage(currentCurator);
             MainFrame.Navigate(changeProfilePage);
             AddClassButton.IsEnabled = false;
+        }
+
+        private bool IsOnMainPage()
+        {
+            return MainFrame.Content is MainCoursesPage;
+        }
+
+        private async void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MainFrame.CanGoBack)
+            {
+                MainFrame.GoBack();
+
+                await Task.Delay(100); 
+                Dispatcher.Invoke(() =>
+                {
+                    AddClassButton.IsEnabled = IsOnMainPage();
+                });
+            }
         }
     }
 }
