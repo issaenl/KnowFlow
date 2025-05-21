@@ -20,9 +20,10 @@ namespace KnowFlow.Pages
         private readonly UserData _userData = new UserData();
         private System.Windows.Threading.DispatcherTimer _noticesTimer;
 
-        public bool IsUser { get; }
+        public bool IsUser;
+        public bool IsAdmin;
 
-        public CoursePage(Course course, string currentUser, bool isUser)
+        public CoursePage(Course course, string currentUser, bool isUser, bool isAdmin = false)
         {
             InitializeComponent();
             _course = course;
@@ -30,14 +31,21 @@ namespace KnowFlow.Pages
             CourseTitle.Text = course.CourseName;
             CourseDescription.Text = course.CourseDescription;
             IsUser = isUser;
+            IsAdmin = isAdmin;
 
-            if (IsUser)
+            if (IsUser || IsAdmin)
             {
                 InviteButton.Visibility = Visibility.Collapsed;
                 AddMaterialButton.Visibility = Visibility.Collapsed;
                 AddSectionButton.Visibility = Visibility.Collapsed;
                 AddNoticeButton.Visibility = Visibility.Collapsed;
                 DeleteCourse.Visibility = Visibility.Collapsed;
+                AddTestButton.Visibility = Visibility.Collapsed;
+
+                if(isAdmin)
+                {
+                    QuitCourse.Visibility = Visibility.Collapsed;
+                }
             }
 
             LoadCourseData();

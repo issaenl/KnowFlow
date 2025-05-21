@@ -123,8 +123,23 @@ namespace KnowFlow.Pages.Сlass
             }
         }
 
-        public List<Course> LoadUserCourses(int userId)
+        public List<Course> LoadUserCourses(int userId, string username)
         {
+            if (username == "admin")
+            {
+                return context.Courses
+                    .AsNoTracking()
+                    .ToList();
+            }
+
+            var user = context.Users.Find(userId);
+            if (user != null && user.UserRole == "Администратор")
+            {
+                return context.Courses
+                    .AsNoTracking()
+                    .ToList();
+            }
+
             return context.UserCourses
                 .Where(uc => uc.UserId == userId)
                 .Join(context.Courses,

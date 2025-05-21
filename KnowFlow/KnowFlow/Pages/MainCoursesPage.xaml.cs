@@ -40,7 +40,7 @@ namespace KnowFlow.Pages
         {
             try
             {
-                var courses = _userData.LoadUserCourses(_curatorId);
+                var courses = _userData.LoadUserCourses(_curatorId, _currentUser);
                 Courses.Clear();
                 foreach (var course in courses)
                 {
@@ -60,7 +60,8 @@ namespace KnowFlow.Pages
                 if (Window.GetWindow(this) is MainAppWindow mainWindow)
                 {
                     bool isUser = mainWindow.IsUser;
-                    var coursePage = new CoursePage(course, _currentUser, isUser);
+                    bool isAdmin = mainWindow.IsAdmin;
+                    var coursePage = new CoursePage(course, _currentUser, isUser, isAdmin);
                     mainWindow.MainFrame.Navigate(coursePage);
                     mainWindow.AddClassButton.IsEnabled = false;
                 }

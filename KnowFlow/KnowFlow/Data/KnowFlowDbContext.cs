@@ -1,5 +1,6 @@
 ﻿using KnowFlow.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,11 +31,8 @@ namespace KnowFlow.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=KnowFlow;Uid=root;Pwd=1111;",
-                new MySqlServerVersion(new Version(8, 0, 23)))
-                .LogTo(Console.WriteLine, LogLevel.Information) // ← покажет SQL и ошибки
-                .EnableSensitiveDataLogging();
+                new MySqlServerVersion(new Version(8, 0, 23)));
         }
-
 
 
     }
