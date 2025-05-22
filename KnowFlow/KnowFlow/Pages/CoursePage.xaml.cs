@@ -20,7 +20,7 @@ namespace KnowFlow.Pages
         private readonly UserData _userData = new UserData();
         private System.Windows.Threading.DispatcherTimer _noticesTimer;
 
-        public bool IsUser;
+        public bool IsUser { get; }
         public bool IsAdmin;
 
         public CoursePage(Course course, string currentUser, bool isUser, bool isAdmin = false)
@@ -42,9 +42,11 @@ namespace KnowFlow.Pages
                 DeleteCourse.Visibility = Visibility.Collapsed;
                 AddTestButton.Visibility = Visibility.Collapsed;
 
-                if(isAdmin)
+                if (isAdmin)
                 {
                     QuitCourse.Visibility = Visibility.Collapsed;
+                    DeleteCourse.Visibility = Visibility.Visible;
+                    InviteButton.Visibility = Visibility.Visible;
                 }
             }
 

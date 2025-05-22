@@ -12,7 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Text="Пользователь: " FontWeight="Bold"/>
             <TextBlock Text="{Binding Result.Username}" Margin="5 0 0 0"/>
@@ -21,52 +21,54 @@
             <TextBlock Text="Баллы: " FontWeight="Bold" Margin="20 0 0 0"/>
             <TextBlock Text="{Binding Result.TotalPoints}" Margin="5 0 0 0"/>
         </StackPanel>
-        
-        <ListView Grid.Row="1" ItemsSource="{Binding Result.QuestionResults}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="LightGray" BorderThickness="0 0 0 1" Padding="0 5">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Question.QuestionText}" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding PointsEarned, StringFormat=Получено баллов: {0}}"/>
-                            <TextBlock>
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="Red"/>
-                                        <Setter Property="Text" Value="Ответ неверный"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsCorrect}" Value="True">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                                <Setter Property="Text" Value="Ответ верный"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <TextBlock Text="Выбранные ответы:" Margin="0 5 0 0" FontWeight="Bold"/>
-                            <ItemsControl ItemsSource="{Binding AnswerSelections}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="Black"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Answer.IsCorrect}" Value="True">
-                                                            <Setter Property="Foreground" Value="Green"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                            <Run Text="{Binding AnswerText}"/>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Result.QuestionResults}" Margin="0 10 0 0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="LightGray" BorderThickness="0 0 0 1" Padding="0 5" Margin="0 0 0 10">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Question.QuestionText}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding PointsEarned, StringFormat=Получено баллов: {0}}"/>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                            <Setter Property="Text" Value="Ответ неверный"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsCorrect}" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                    <Setter Property="Text" Value="Ответ верный"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="Выбранные ответы:" Margin="0 5 0 0" FontWeight="Bold"/>
+                                <ItemsControl ItemsSource="{Binding AnswerSelections}" Margin="10 0 0 0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Answer.IsCorrect}" Value="True">
+                                                                <Setter Property="Foreground" Value="Green"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                                <Run Text="{Binding AnswerText}"/>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Window>

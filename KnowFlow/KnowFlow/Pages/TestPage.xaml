@@ -21,7 +21,7 @@
                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
                          GroupName="{Binding QuestionId}"
                          Checked="RadioButton_Checked"
-                         Margin="5"/>
+                         Margin="5" FontSize="14"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -35,7 +35,7 @@
                           IsChecked="{Binding IsSelected, Mode=TwoWay}"
                           Checked="CheckBox_Checked"
                           Unchecked="CheckBox_Unchecked"
-                          Margin="5"/>
+                          Margin="5" FontSize="14"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -45,7 +45,7 @@
             <TextBox Text="{Binding UserAnswer, UpdateSourceTrigger=PropertyChanged}" 
              Margin="0,5"
              TextChanged="TextBox_TextChanged"
-             materialDesign:HintAssist.Hint="Введите ваш ответ"/>
+             materialDesign:HintAssist.Hint="Введите ваш ответ" FontSize="14"/>
         </DataTemplate>
 
         <converter:QuestionTemplateSelector x:Key="QuestionTemplateSelector"
@@ -68,8 +68,8 @@
                        Margin="0,0,0,10"/>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Оставшееся время: " FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding TimeLeft}" Foreground="Red"/>
+                <TextBlock Text="Оставшееся время: " FontWeight="SemiBold" FontSize="16"/>
+                <TextBlock Text="{Binding TimeLeft}" Foreground="Red" FontSize="16"/>
             </StackPanel>
 
         </StackPanel>
@@ -86,7 +86,7 @@
                                 </StackPanel>
 
                                 <ContentControl Content="{Binding}" 
-                                    ContentTemplateSelector="{StaticResource QuestionTemplateSelector}"/>
+                        ContentTemplateSelector="{StaticResource QuestionTemplateSelector}"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

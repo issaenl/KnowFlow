@@ -55,7 +55,18 @@ namespace KnowFlow.Pages
                 Debug.WriteLine("В тесте нет вопросов!");
             }
 
-            Questions = new ObservableCollection<Question>(_test.Questions);
+            var random = new Random();
+            var randomizedQuestions = _test.Questions.OrderBy(q => random.Next()).ToList();
+
+            foreach (var question in randomizedQuestions)
+            {
+                if (question.Answers != null && question.Answers.Any())
+                {
+                    question.Answers = new ObservableCollection<Answer>(question.Answers.OrderBy(a => random.Next()));
+                }
+            }
+
+            Questions = new ObservableCollection<Question>(randomizedQuestions);
 
             DataContext = this;
 
@@ -138,10 +149,9 @@ namespace KnowFlow.Pages
                 var correctAnswers = question.Answers.Where(a => a.IsCorrect).ToList();
                 var correctAnswerIds = correctAnswers.Select(a => a.AnswerId).ToList();
 
-                // Проверка ответов через UserTestSession
                 switch (question.QuestionType)
                 {
-                    case 1: // Один выбор
+                    case 1: 
                         if (_userSession.SelectedAnswers.TryGetValue(question.QuestionId, out var selectedIds) && selectedIds.Any())
                         {
                             var selectedAnswerId = selectedIds.First();
@@ -161,7 +171,7 @@ namespace KnowFlow.Pages
                         }
                         break;
 
-                    case 2: // Множественный выбор
+                    case 2: 
                         if (_userSession.SelectedAnswers.TryGetValue(question.QuestionId, out var multipleSelectedIds))
                         {
                             foreach (var answerId in multipleSelectedIds)
@@ -183,7 +193,7 @@ namespace KnowFlow.Pages
                         }
                         break;
 
-                    case 0: // Текстовый ответ
+                    case 0: 
                         if (_userSession.TextAnswers.TryGetValue(question.QuestionId, out var textAnswer))
                         {
                             questionResult.AnswerSelections.Add(new AnswerSelection
@@ -219,7 +229,6 @@ namespace KnowFlow.Pages
                 NavigationService.GoBack();
         }
 
-        // Обработчик для RadioButton (один выбор)
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is RadioButton radioButton && radioButton.DataContext is Answer answer)
@@ -231,7 +240,6 @@ namespace KnowFlow.Pages
             }
         }
 
-        // Обработчик для CheckBox (множественный выбор)
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkBox && checkBox.DataContext is Answer answer)
@@ -254,7 +262,6 @@ namespace KnowFlow.Pages
             }
         }
 
-        // Обработчик для TextBox (текстовый ответ)
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is TextBox textBox && textBox.DataContext is Question question)
